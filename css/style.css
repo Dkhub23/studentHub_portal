@@ -1,0 +1,26 @@
+/* body{
+    background-color: #ffffff;
+    margin: 2px;
+    padding: 0px;
+    font:  sans-serif;
+   
+    background-image:   linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)),
+    url("../images/background.jpg");
+      background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    min-height:100vh;
+
+}
+h1{
+    color: #051b6b;
+    margin-top:20px;
+}
+h2{
+    color: #07021f;
+}
+nav{
+    margin:2px;
+} */
