@@ -4,133 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attendance Calculator</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div class="container">
+        <header class="header">
+            <h1>🎓 Student Hub Portal</h1>
+            <p>Lecture Gross Attendance of Semester 3</p>
+        </header>
 
-<center>
-
-    <h1>Lecture Gross Attendance of Semester 3</h1>
-
-    <h2>Overall Attendance : <span id="overall">0%</span></h2>
-    <hr>
-    <nav>
-            <a href="index.html">Home</a> |
-            <a href="login.html">Login</a> |
-            <a href="register.html">Register</a> |
-            <a href="student.html">Student</a> |
-            <a href="faculty.html">Faculty</a> |
-            <a href="courses.html">Courses</a> |
-            <a href="attendance.html">Attendance</a> |
-            <a href="assignment.html">Assignment</a> |
-            <a href="notice.html">Notice</a> |
-            <a href="profile.html">Profile</a> |
-            <a href="admin.html">Admin</a> |
+        <nav class="nav">
+            <a href="index.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Register</a>
+            <a href="student.html">Student</a>
+            <a href="faculty.html">Faculty</a>
+            <a href="courses.html">Courses</a>
+            <a href="attendance.html">Attendance</a>
+            <a href="assignment.html">Assignment</a>
+            <a href="notice.html">Notice</a>
+            <a href="profile.html">Profile</a>
+            <a href="admin.html">Admin</a>
             <a href="contact.html">Contact Us</a>
         </nav>
-        <hr>
 
-    <table border="1" cellpadding="10">
+        <main class="main">
+            <section class="card">
+                <h2>Overall Attendance : <span id="overall">0%</span></h2>
+                <div class="form-box">
+                    <table>
+                        <tr>
+                            <th>Course</th>
+                            <th>Class Type</th>
+                            <th>Present</th>
+                            <th>Total</th>
+                            <th>Percentage</th>
+                        </tr>
+                        <tr>
+                            <td>CEUE203 / OOP</td>
+                            <td>LECT</td>
+                            <td><input type="number" id="p1"></td>
+                            <td><input type="number" id="t1"></td>
+                            <td id="a1">0%</td>
+                        </tr>
+                        <tr>
+                            <td>CEUC201 / FDSA</td>
+                            <td>LECT</td>
+                            <td><input type="number" id="p2"></td>
+                            <td><input type="number" id="t2"></td>
+                            <td id="a2">0%</td>
+                        </tr>
+                        <tr>
+                            <td>HSUV201 / CPI</td>
+                            <td>LECT</td>
+                            <td><input type="number" id="p3"></td>
+                            <td><input type="number" id="t3"></td>
+                            <td id="a3">0%</td>
+                        </tr>
+                        <tr>
+                            <td>ITUC201 / FCN</td>
+                            <td>LECT</td>
+                            <td><input type="number" id="p4"></td>
+                            <td><input type="number" id="t4"></td>
+                            <td id="a4">0%</td>
+                        </tr>
+                    </table>
+                    <br>
+                    <input type="button" value="Calculate Attendance" onclick="calculate()">
+                </div>
+            </section>
+        </main>
 
-        <tr>
-            <th>Course</th>
-            <th>Class Type</th>
-            <th>Present</th>
-            <th>Total</th>
-            <th>Percentage</th>
-        </tr>
-
-        <tr>
-            <td>CEUE203 / OOP</td>
-            <td>LECT</td>
-            <td><input type="number" id="p1"></td>
-            <td><input type="number" id="t1"></td>
-            <td id="a1">0%</td>
-        </tr>
-
-        <tr>
-            <td>CEUC201 / FDSA</td>
-            <td>LECT</td>
-            <td><input type="number" id="p2"></td>
-            <td><input type="number" id="t2"></td>
-            <td id="a2">0%</td>
-        </tr>
-
-        <tr>
-            <td>HSUV201 / CPI</td>
-            <td>LECT</td>
-            <td><input type="number" id="p3"></td>
-            <td><input type="number" id="t3"></td>
-            <td id="a3">0%</td>
-        </tr>
-
-        <tr>
-            <td>ITUC201 / FCN</td>
-            <td>LECT</td>
-            <td><input type="number" id="p4"></td>
-            <td><input type="number" id="t4"></td>
-            <td id="a4">0%</td>
-        </tr>
-        
-    </table>
-    
-    <br>
-    
-    <button onclick="calculate()">Calculate Attendance</button><br><br>
-    <button>
-    <a href="index.html">🏡Back To Home</a>
-    </button>
-
-     <footer>
+        <footer class="footer">
             <p>&copy; 2026 Student Hub Portal. All Rights Reserved.</p>
         </footer>
+    </div>
 
+    <script>
+        function calculate() {
+            let totalPresent = 0;
+            let totalClass = 0;
 
-</center>
+            for (let i = 1; i <= 4; i++) {
+                let p = Number(document.getElementById("p" + i).value);
+                let t = Number(document.getElementById("t" + i).value);
 
-<script>
-
-function calculate()
-{
-    let totalPresent = 0;
-    let totalClass = 0;
-
-    for(let i = 1; i <= 4; i++)
-    {
-        let p = Number(document.getElementById("p" + i).value);
-        let t = Number(document.getElementById("t" + i).value);
-
-        if(t > 0)
-        {
-            if(p <= t)
-            {
-                let per = (p / t) * 100;
-
-                document.getElementById("a" + i).innerHTML = per.toFixed(1) + "%";
-
-                totalPresent = totalPresent + p;
-                totalClass = totalClass + t;
+                if (t > 0) {
+                    if (p <= t) {
+                        let per = (p / t) * 100;
+                        document.getElementById("a" + i).innerHTML = per.toFixed(1) + "%";
+                        totalPresent += p;
+                        totalClass += t;
+                    } else {
+                        alert("Present classes cannot be greater than Total classes.");
+                        return;
+                    }
+                }
             }
-            else
-            {
-                alert("Present classes cannot be greater than Total classes.");
-                return;
+
+            if (totalClass > 0) {
+                let overall = (totalPresent / totalClass) * 100;
+                document.getElementById("overall").innerHTML = overall.toFixed(1) + "%";
+            } else {
+                document.getElementById("overall").innerHTML = "0%";
             }
         }
-    }
-
-    if(totalClass > 0)
-    {
-        let overall = (totalPresent / totalClass) * 100;
-
-        document.getElementById("overall").innerHTML = overall.toFixed(1) + "%";
-    }
-    else
-    {
-        document.getElementById("overall").innerHTML = "0%";
-    }
-
-}
-
-</script>
+    </script>
 </body>
 </html>

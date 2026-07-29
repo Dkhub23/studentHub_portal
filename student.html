@@ -3,70 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Student Success</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <center>
-     <h1>🎓 Student Hub Portal</h1>
-    <h2>Student Success</h2>
+    <div class="container">
+        <header class="header">
+            <h1>🎓 Student Hub Portal</h1>
+            <p>Student Success Dashboard</p>
+        </header>
 
-    <hr>
-    
-    <nav>
-            <a href="index.html">Home</a> |
-            <a href="login.html">Login</a> |
-            <a href="register.html">Register</a> |
-            <a href="student.html">Student</a> |
-            <a href="faculty.html">Faculty</a> |
-            <a href="courses.html">Courses</a> |
-            <a href="attendance.html">Attendance</a> |
-            <a href="assignment.html">Assignment</a> |
-            <a href="notice.html">Notice</a> |
-            <a href="profile.html">Profile</a> |
-            <a href="admin.html">Admin</a> |
+        <nav class="nav">
+            <a href="index.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Register</a>
+            <a href="student.html">Student</a>
+            <a href="faculty.html">Faculty</a>
+            <a href="courses.html">Courses</a>
+            <a href="attendance.html">Attendance</a>
+            <a href="assignment.html">Assignment</a>
+            <a href="notice.html">Notice</a>
+            <a href="profile.html">Profile</a>
+            <a href="admin.html">Admin</a>
             <a href="contact.html">Contact Us</a>
         </nav>
-<br>
-        <table border="1"   cellpadding="10px" > 
-            <tr>
-                <td>Event Name</td>
-                <td>Event Type</td>
-                <td>Venue</td>
-                <td>Start Date</td>
-                <td>End Date</td>
-                <td>Level & Points</td>
-            </tr>
 
-            <tr>
-                <td><input type="text"></td>
-                <td><input type="radio" name="type" value="Online">Online<br>
-                    <input type="radio" name="type" value="Offline">Offline
-                </td>
-                 <td><input type="text"></td>
-                 <td><input type="date"></td>
-                 <td><input type="date"></td>
-                 <td><select name="Level">
-                    <option>International Level(50)</option>
-                    <option>National Level(40)</option>
-                    <option>State Level(30)</option>
-                    <option>University Level(20)</option>
-                 </select></td>
+        <main class="main">
+            <section class="card">
+                <h2>Student Event Registration</h2>
+                <div class="form-box">
+                    <table>
+                        <tr>
+                            <td>Event Name</td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Event Type</td>
+                            <td>
+                                <input type="radio" name="type" value="Online"> Online
+                                <input type="radio" name="type" value="Offline"> Offline
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Venue</td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Start Date</td>
+                            <td><input type="date"></td>
+                        </tr>
+                        <tr>
+                            <td>End Date</td>
+                            <td><input type="date"></td>
+                        </tr>
+                        <tr>
+                            <td>Level & Points</td>
+                            <td>
+                                <select name="Level">
+                                    <option>International Level(50)</option>
+                                    <option>National Level(40)</option>
+                                    <option>State Level(30)</option>
+                                    <option>University Level(20)</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <input type="submit" value="Save">
+                    <input type="reset" value="Cancel">
+                </div>
+            </section>
+        </main>
 
-            </tr>
-        </table>
-<br>
-        <input type="submit">
-        <button>Cancel</button>
-<br><br>
-<br>
-    <a href="index.html">
-        <button>🏡Back to Home</button>
-    </a>
-        <hr>
-     <footer>
+        <footer class="footer">
             <p>&copy; 2026 Student Hub Portal. All Rights Reserved.</p>
         </footer>
-        </center>
-
+    </div>
 </body>
 </html>

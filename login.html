@@ -1,82 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Hub Login</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
+    <div class="container">
+        <header class="header">
+            <h1>🎓 Student Hub Portal</h1>
+            <p>Login to continue</p>
+        </header>
 
-<center>
+        <nav class="nav">
+            <a href="index.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Register</a>
+        </nav>
 
-    <h1>🎓 Student Hub Portal</h1>
-    <h2>Login Page</h2>
+        <main class="main">
+            <section class="card form-box">
+                <h2>Login Page</h2>
+                <form action="index.html">
+                    <table>
+                        <tr>
+                            <td><label>Username:</label></td>
+                            <td>
+                                <input type="text" name="username" placeholder="Enter Username" required>
+                            </td>
+                        </tr>
 
-    <hr>
+                        <tr>
+                            <td><label>Password:</label></td>
+                            <td>
+                                <input type="password" name="password" placeholder="Enter Password" required>
+                            </td>
+                        </tr>
 
-    <form action="index.html">
+                        <tr>
+                            <td><label>Login As:</label></td>
+                            <td>
+                                <input type="radio" name="role" value="student" checked> Student
+                                <input type="radio" name="role" value="faculty"> Faculty
+                                <input type="radio" name="role" value="admin"> Admin
+                            </td>
+                        </tr>
 
-        <table>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input type="checkbox"> Remember Me
+                            </td>
+                        </tr>
 
-            <tr>
-                <td><label>Username:</label></td>
-                <td>
-                    <input type="text" name="username" placeholder="Enter Username" required>
-                </td>
-            </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <input type="submit" value="Login">
+                                <input type="reset" value="Clear">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
 
-            <tr>
-                <td><label>Password:</label></td>
-                <td>
-                    <input type="password" name="password" placeholder="Enter Password" required>
-                </td>
-            </tr>
+                <p class="note">
+                    Don't have an account?
+                    <a href="register.html">Register Here</a>
+                </p>
+            </section>
+        </main>
 
-            <tr>
-                <td><label>Login As:</label></td>
-                <td>
-                    <input type="radio" name="role" value="student" checked> Student
-                    <input type="radio" name="role" value="faculty"> Faculty
-                    <input type="radio" name="role" value="admin"> Admin
-                </td>
-            </tr>
-
-            <tr>
-                <td></td>
-                <td>
-                    <input type="checkbox"> Remember Me
-                </td>
-            </tr>
-
-            <tr>
-                <td></td>
-                <td>
-                    <input type="submit" value="Login">
-                    <input type="reset" value="Clear">
-                </td>
-            </tr>
-
-        </table>
-
-    </form>
-
-    <br>
-
-    <p>
-        Don't have an account?
-        <a href="register.html">Register Here</a>
-    </p>
-
-    <br>
-
-    <!-- <a href="index.html">🏠 Back to Home</a> -->
-
-    <hr>
-
-    <footer>
-        <p>&copy; 2026 Student Hub Portal</p>
-    </footer>
-
-</center>
-
+        <footer class="footer">
+            <p>&copy; 2026 Student Hub Portal</p>
+        </footer>
+    </div>
 </body>
 </html>

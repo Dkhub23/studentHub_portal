@@ -1,113 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Profile</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
+    <div class="container">
+        <header class="header">
+            <h1>🎓 Student Hub Portal</h1>
+            <p>Student Profile</p>
+        </header>
 
-<center>
-
-    <h1>🎓 Student Hub Portal</h1>
-    <h2>Student Profile</h2>
-    <hr>
-    <nav>
-            <a href="index.html">Home</a> |
-            <a href="login.html">Login</a> |
-            <a href="register.html">Register</a> |
-            <a href="student.html">Student</a> |
-            <a href="faculty.html">Faculty</a> |
-            <a href="courses.html">Courses</a> |
-            <a href="attendance.html">Attendance</a> |
-            <a href="assignment.html">Assignment</a> |
-            <a href="notice.html">Notice</a> |
-            <a href="profile.html">Profile</a> |
-            <a href="admin.html">Admin</a> |
+        <nav class="nav">
+            <a href="index.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Register</a>
+            <a href="student.html">Student</a>
+            <a href="faculty.html">Faculty</a>
+            <a href="courses.html">Courses</a>
+            <a href="attendance.html">Attendance</a>
+            <a href="assignment.html">Assignment</a>
+            <a href="notice.html">Notice</a>
+            <a href="profile.html">Profile</a>
+            <a href="admin.html">Admin</a>
             <a href="contact.html">Contact Us</a>
         </nav>
-        <hr>
 
-    <hr>
+        <main class="main">
+            <section class="card">
+                <h2>Student Details</h2>
+                <img src="student.jpg" alt="Student Photo" width="150" height="150">
+                <table>
+                    <tr>
+                        <th>Field</th>
+                        <th>Information</th>
+                    </tr>
+                    <tr><td>Student Name</td><td>Dhruvi Kakadia</td></tr>
+                    <tr><td>Enrollment No.</td><td>25CS025</td></tr>
+                    <tr><td>Course</td><td>B.Tech Computer Science & Engineering</td></tr>
+                    <tr><td>Semester</td><td>3</td></tr>
+                    <tr><td>Email</td><td>dhruvi@example.com</td></tr>
+                    <tr><td>Mobile</td><td>+91 9876543210</td></tr>
+                    <tr><td>Date of Birth</td><td>01-01-2006</td></tr>
+                    <tr><td>Gender</td><td>Female</td></tr>
+                    <tr><td>Address</td><td>Gujarat, India</td></tr>
+                </table>
+            </section>
+        </main>
 
-    <img src="student.jpg" alt="Student Photo" width="150" height="150">
-
-    <br><br>
-
-    <table border="1" cellpadding="10">
-
-        <tr>
-            <th>Field</th>
-            <th>Information</th>
-        </tr>
-
-        <tr>
-            <td>Student Name</td>
-            <td>Dhruvi Kakadia</td>
-        </tr>
-
-        <tr>
-            <td>Enrollment No.</td>
-            <td>25CS025</td>
-        </tr>
-
-        <tr>
-            <td>Course</td>
-            <td>B.Tech Computer Science & Engineering</td>
-        </tr>
-
-        <tr>
-            <td>Semester</td>
-            <td>3</td>
-        </tr>
-
-        <tr>
-            <td>Email</td>
-            <td>dhruvi@example.com</td>
-        </tr>
-
-        <tr>
-            <td>Mobile</td>
-            <td>+91 9876543210</td>
-        </tr>
-
-        <tr>
-            <td>Date of Birth</td>
-            <td>01-01-2006</td>
-        </tr>
-
-        <tr>
-            <td>Gender</td>
-            <td>Female</td>
-        </tr>
-
-        <tr>
-            <td>Address</td>
-            <td>Gujarat, India</td>
-        </tr>
-
-    </table>
-
-    <br>
-
-    <button>Edit Profile</button>
-    <button>Change Password</button>
-
-    
-    <a href="index.html">
-        <button>🏡Home</button>
-    </a>
-
-    <a href="login.html">
-        <button>Logout</button>
-    </a>
-
-    <hr>
-
-    <footer>
-        <p>&copy; 2026 Student Hub Portal | Student Profile</p>
-    </footer>
-
-</center>
-
+        <footer class="footer">
+            <p>&copy; 2026 Student Hub Portal | Student Profile</p>
+        </footer>
+    </div>
 </body>
 </html>
