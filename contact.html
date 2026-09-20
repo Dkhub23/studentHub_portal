@@ -31,13 +31,13 @@
         <main class="main">
             <section class="card form-box">
                 <h2>Send us a message</h2>
-                <form action="index.html">
+                <form action="process.php" method="post">
                     <table>
                         <tr><td>Name:</td><td><input type="text" name="name" required></td></tr>
                         <tr><td>Email:</td><td><input type="email" name="email" required></td></tr>
                         <tr><td>Mobile Number:</td><td><input type="tel" name="mobile"></td></tr>
-                        <tr><td>Subject:</td><td><input type="text" name="subject"></td></tr>
-                        <tr><td>Message:</td><td><textarea rows="5" cols="30" placeholder="Write your message here..."></textarea></td></tr>
+                        <tr><td>Subject:</td><td><input type="text" name="subject" required></td></tr>
+                        <tr><td>Message:</td><td><textarea name="message" rows="5" cols="30" placeholder="Write your message here..." required></textarea></td></tr>
                         <tr><td></td><td><input type="submit" value="Send Message"><input type="reset" value="Clear"></td></tr>
                     </table>
                 </form>

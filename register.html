@@ -22,35 +22,42 @@
         <main class="main">
             <section class="card form-box">
                 <h2>Student Registration Form</h2>
-                <form action="login.html">
-                    <table>
+                <!-- <form action="login.html"> -->
+                    <form id="RegistrationForm">
+                     <table>
                         <tr>
-                            <td>Full Name:</td>
-                            <td><input type="text" name="name" placeholder="Enter Full Name" required></td>
+                            <td id="name">Full Name:</td>
+                            <td>
+                                <input type="text" name="name" placeholder="Enter Full Name" required>
+                                <span id="nameError"></span>
+                            </td>
                         </tr>
 
                         <tr>
-                            <td>Enrollment No:</td>
+                            <td id="enrollment">Enrollment No:</td>
                             <td><input type="text" name="enrollment" required></td>
+                            <span id="enrollmentError"></span>
                         </tr>
 
                         <tr>
-                            <td>Email:</td>
+                            <td id="email">Email:</td>
                             <td><input type="email" name="email" placeholder="Enter Email" required></td>
+                            <span id="emailError"></span>
                         </tr>
 
                         <tr>
-                            <td>Password:</td>
+                            <td id="password">Password:</td>
                             <td><input type="password" name="password" required></td>
+                            <span id="passwordError"></span>
                         </tr>
 
                         <tr>
-                            <td>Confirm Password:</td>
+                            <td id="confirmpassword">Confirm Password:</td>
                             <td><input type="password" name="confirm" required></td>
                         </tr>
 
                         <tr>
-                            <td>Gender:</td>
+                            <td id="gender">Gender:</td>
                             <td>
                                 <input type="radio" name="gender" value="Male"> Male
                                 <input type="radio" name="gender" value="Female"> Female
@@ -59,12 +66,12 @@
                         </tr>
 
                         <tr>
-                            <td>Date of Birth:</td>
+                            <td id="dob">Date of Birth:</td>
                             <td><input type="date" name="dob"></td>
                         </tr>
 
                         <tr>
-                            <td>Course:</td>
+                            <td id="course">Course:</td>
                             <td>
                                 <select name="course">
                                     <option>B.Tech CSE</option>
@@ -77,19 +84,19 @@
                         </tr>
 
                         <tr>
-                            <td>Mobile No:</td>
+                            <td id="mobilenumber">Mobile No:</td>
                             <td><input type="tel" name="mobile"></td>
                         </tr>
 
                         <tr>
-                            <td>Address:</td>
+                            <td id="address">Address:</td>
                             <td>
                                 <textarea rows="4" cols="25" placeholder="Enter your address"></textarea>
                             </td>
                         </tr>
 
                         <tr>
-                            <td>Upload Photo:</td>
+                            <td id="Uploadphoto">Upload Photo:</td>
                             <td><input type="file"></td>
                         </tr>
 
