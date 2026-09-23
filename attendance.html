@@ -70,7 +70,7 @@
                         </tr>
                     </table>
                     <br>
-                    <input type="button" value="Calculate Attendance" onclick="calculate()">
+                    <input type="button" id="calculateAttendance" value="Calculate Attendance">
                 </div>
             </section>
         </main>
@@ -89,6 +89,10 @@
                 let p = Number(document.getElementById("p" + i).value);
                 let t = Number(document.getElementById("t" + i).value);
 
+                if (p < 0 || t < 0 || p > t) {
+                    alert("Present classes must be between 0 and Total classes.");
+                    return;
+                }
                 if (t > 0) {
                     if (p <= t) {
                         let per = (p / t) * 100;
@@ -109,6 +113,8 @@
                 document.getElementById("overall").innerHTML = "0%";
             }
         }
+        document.getElementById("calculateAttendance").addEventListener("click", calculate);
     </script>
+    <script src="js/script.js"></script>
 </body>
 </html>
