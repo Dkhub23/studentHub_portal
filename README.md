@@ -46,4 +46,4 @@ Student Hub Portal is a student-friendly web interface for managing:
 - CSS3
 
 ## Author
-Student Hub Portal
+Dhruvi Kakadia
