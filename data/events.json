@@ -1,0 +1,167 @@
+[
+    {
+        "id": 1,
+        "name": "Tech Fest 2026",
+        "type": "Offline",
+        "category": "Technical",
+        "venue": "Main Auditorium",
+        "startDate": "2026-10-05",
+        "endDate": "2026-10-06",
+        "level": "University",
+        "points": 20
+    },
+    {
+        "id": 2,
+        "name": "Hackathon 2026",
+        "type": "Offline",
+        "category": "Coding",
+        "venue": "Innovation Lab",
+        "startDate": "2026-10-10",
+        "endDate": "2026-10-11",
+        "level": "National",
+        "points": 40
+    },
+    {
+        "id": 3,
+        "name": "AI Workshop",
+        "type": "Online",
+        "category": "Workshop",
+        "venue": "Online",
+        "startDate": "2026-10-12",
+        "endDate": "2026-10-12",
+        "level": "University",
+        "points": 20
+    },
+    {
+        "id": 4,
+        "name": "Robotics Challenge",
+        "type": "Offline",
+        "category": "Technical",
+        "venue": "Robotics Lab",
+        "startDate": "2026-10-15",
+        "endDate": "2026-10-16",
+        "level": "State",
+        "points": 30
+    },
+    {
+        "id": 5,
+        "name": "Web Development Bootcamp",
+        "type": "Offline",
+        "category": "Workshop",
+        "venue": "Computer Lab",
+        "startDate": "2026-10-18",
+        "endDate": "2026-10-19",
+        "level": "University",
+        "points": 20
+    },
+    {
+        "id": 6,
+        "name": "Code Debugging Contest",
+        "type": "Online",
+        "category": "Coding",
+        "venue": "Online",
+        "startDate": "2026-10-20",
+        "endDate": "2026-10-20",
+        "level": "State",
+        "points": 30
+    },
+    {
+        "id": 7,
+        "name": "Cyber Security Seminar",
+        "type": "Offline",
+        "category": "Seminar",
+        "venue": "Seminar Hall",
+        "startDate": "2026-10-22",
+        "endDate": "2026-10-22",
+        "level": "University",
+        "points": 20
+    },
+    {
+        "id": 8,
+        "name": "Cloud Computing Workshop",
+        "type": "Online",
+        "category": "Workshop",
+        "venue": "Online",
+        "startDate": "2026-10-25",
+        "endDate": "2026-10-25",
+        "level": "National",
+        "points": 40
+    },
+    {
+        "id": 9,
+        "name": "Sports Meet",
+        "type": "Offline",
+        "category": "Sports",
+        "venue": "University Ground",
+        "startDate": "2026-10-28",
+        "endDate": "2026-10-29",
+        "level": "State",
+        "points": 30
+    },
+    {
+        "id": 10,
+        "name": "Photography Contest",
+        "type": "Offline",
+        "category": "Cultural",
+        "venue": "Open Theatre",
+        "startDate": "2026-11-02",
+        "endDate": "2026-11-02",
+        "level": "University",
+        "points": 20
+    },
+    {
+        "id": 11,
+        "name": "Entrepreneurship Talk",
+        "type": "Online",
+        "category": "Seminar",
+        "venue": "Online",
+        "startDate": "2026-11-05",
+        "endDate": "2026-11-05",
+        "level": "National",
+        "points": 40
+    },
+    {
+        "id": 12,
+        "name": "Java Programming Workshop",
+        "type": "Offline",
+        "category": "Workshop",
+        "venue": "Computer Lab",
+        "startDate": "2026-11-08",
+        "endDate": "2026-11-09",
+        "level": "University",
+        "points": 20
+    },
+    {
+        "id": 13,
+        "name": "UI UX Design Contest",
+        "type": "Offline",
+        "category": "Design",
+        "venue": "Design Studio",
+        "startDate": "2026-11-12",
+        "endDate": "2026-11-12",
+        "level": "State",
+        "points": 30
+    },
+    {
+        "id": 14,
+        "name": "Quiz Competition",
+        "type": "Offline",
+        "category": "Academic",
+        "venue": "Block A",
+        "startDate": "2026-11-15",
+        "endDate": "2026-11-15",
+        "level": "University",
+        "points": 20
+    },
+    {
+        "id": 15,
+        "name": "Annual Cultural Fest",
+        "type": "Offline",
+        "category": "Cultural",
+        "venue": "Main Ground",
+        "startDate": "2026-11-20",
+        "endDate": "2026-11-22",
+        "level": "International",
+        "points": 50
+    }
+]

@@ -1,84 +1,643 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
     <title>Student Success</title>
-    <link rel="stylesheet" href="css/style.css">
+
+    <link
+        rel="stylesheet"
+        href="css/style.css">
+
+    <style>
+
+        /* =================================
+           JSON DATA SECTIONS
+        ================================= */
+
+        .data-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .data-controls input,
+        .data-controls select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            min-width: 180px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .data-card {
+            padding: 18px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            background: white;
+        }
+
+        .data-card h3 {
+            margin-bottom: 12px;
+        }
+
+        .data-card p {
+            margin: 7px 0;
+        }
+
+        .data-loading {
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .data-error {
+            color: red;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 25px 0;
+        }
+
+        .pagination button {
+            padding: 8px 13px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .register-event-btn {
+            margin-top: 10px;
+            padding: 9px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #4f46e5;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+
+            .data-controls {
+                flex-direction: column;
+            }
+
+            .data-controls input,
+            .data-controls select {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
 </head>
+
+
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>🎓 Student Hub Portal</h1>
-            <p>Student Success Dashboard</p>
-        </header>
 
-        <nav class="nav">
-            <a href="index.html">Home</a>
-            <a href="login.html">Login</a>
-            <a href="register.html">Register</a>
-            <a href="student.html">Student</a>
-            <a href="faculty.html">Faculty</a>
-            <a href="courses.html">Courses</a>
-            <a href="attendance.html">Attendance</a>
-            <a href="assignment.html">Assignment</a>
-            <a href="notice.html">Notice</a>
-            <a href="profile.html">Profile</a>
-           
-            <a href="contact.html">Contact Us</a>
-        </nav>
+<div class="container">
 
-        <main class="main">
-            <section class="card">
-                <h2>Student Event Registration</h2>
-                <div class="form-box">
-                    <table>
-                        <tr>
-                            <td>Event Name</td>
-                            <td><input type="text"></td>
-                        </tr>
-                        <tr>
-                            <td>Event Type</td>
-                            <td>
-                                <input type="radio" name="type" value="Online"> Online
-                                <input type="radio" name="type" value="Offline"> Offline
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Venue</td>
-                            <td><input type="text"></td>
-                        </tr>
-                        <tr>
-                            <td>Start Date</td>
-                            <td><input type="date"></td>
-                        </tr>
-                        <tr>
-                            <td>End Date</td>
-                            <td><input type="date"></td>
-                        </tr>
-                        <tr>
-                            <td>Level & Points</td>
-                            <td>
-                                <select name="Level">
-                                    <option>International Level(50)</option>
-                                    <option>National Level(40)</option>
-                                    <option>State Level(30)</option>
-                                    <option>University Level(20)</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </table>
-                    <br>
-                    <input type="submit" value="Save">
-                    <input type="reset" value="Cancel">
-                </div>
-            </section>
-        </main>
 
-        <footer class="footer">
-            <p>&copy; 2026 Student Hub Portal. All Rights Reserved.</p>
-        </footer>
-    </div>
-    <script src="js/script.js"></script>
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <h1>
+            🎓 Student Hub Portal
+        </h1>
+
+        <p>
+            Student Success Dashboard
+        </p>
+
+    </header>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="nav">
+
+        <a href="index.html">Home</a>
+
+        <a href="login.html">Login</a>
+
+        <a href="register.html">Register</a>
+
+        <a href="student.html">Student</a>
+
+        <a href="faculty.html">Faculty</a>
+
+        <a href="courses.html">Courses</a>
+
+        <a href="attendance.html">Attendance</a>
+
+        <a href="assignment.html">Assignment</a>
+
+        <a href="notice.html">Notice</a>
+
+        <a href="profile.html">Profile</a>
+
+        <a href="contact.html">Contact Us</a>
+
+    </nav>
+
+
+    <main class="main">
+
+
+        <!-- =====================================
+             EVENT REGISTRATION
+        ====================================== -->
+
+        <section class="card">
+
+            <h2>
+                Student Event Registration
+            </h2>
+
+
+            <form
+                id="eventRegistrationForm"
+                class="form-box">
+
+                <table>
+
+                    <tr>
+
+                        <td>
+                            Event Name
+                        </td>
+
+                        <td>
+
+                            <input
+                                type="text"
+                                name="eventName"
+                                id="eventName">
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            Event Type
+                        </td>
+
+                        <td>
+
+                            <input
+                                type="radio"
+                                name="type"
+                                value="Online">
+
+                            Online
+
+                            <input
+                                type="radio"
+                                name="type"
+                                value="Offline">
+
+                            Offline
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            Venue
+                        </td>
+
+                        <td>
+
+                            <input
+                                type="text"
+                                id="eventVenue">
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            Start Date
+                        </td>
+
+                        <td>
+
+                            <input
+                                type="date"
+                                id="startDate">
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            End Date
+                        </td>
+
+                        <td>
+
+                            <input
+                                type="date"
+                                id="endDate">
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>
+                            Level & Points
+                        </td>
+
+                        <td>
+
+                            <select
+                                name="Level">
+
+                                <option>
+                                    International Level(50)
+                                </option>
+
+                                <option>
+                                    National Level(40)
+                                </option>
+
+                                <option>
+                                    State Level(30)
+                                </option>
+
+                                <option>
+                                    University Level(20)
+                                </option>
+
+                            </select>
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+
+                <br>
+
+
+                <input
+                    type="submit"
+                    value="Save">
+
+
+                <input
+                    type="reset"
+                    value="Cancel">
+
+            </form>
+
+        </section>
+
+
+
+        <!-- =====================================
+             EVENTS FROM JSON
+        ====================================== -->
+
+        <section class="card">
+
+            <h2>
+                📅 Upcoming Events
+            </h2>
+
+
+            <div class="data-controls">
+
+                <input
+                    type="text"
+                    id="eventSearch"
+                    placeholder="🔍 Search event...">
+
+
+                <select id="eventCategory">
+
+                    <option value="all">
+                        All Categories
+                    </option>
+
+                    <option value="Technical">
+                        Technical
+                    </option>
+
+                    <option value="Coding">
+                        Coding
+                    </option>
+
+                    <option value="Workshop">
+                        Workshop
+                    </option>
+
+                    <option value="Seminar">
+                        Seminar
+                    </option>
+
+                    <option value="Sports">
+                        Sports
+                    </option>
+
+                    <option value="Cultural">
+                        Cultural
+                    </option>
+
+                    <option value="Design">
+                        Design
+                    </option>
+
+                    <option value="Academic">
+                        Academic
+                    </option>
+
+                </select>
+
+
+                <select id="eventType">
+
+                    <option value="all">
+                        All Types
+                    </option>
+
+                    <option value="Online">
+                        Online
+                    </option>
+
+                    <option value="Offline">
+                        Offline
+                    </option>
+
+                </select>
+
+
+                <select id="eventSort">
+
+                    <option value="default">
+                        Sort By
+                    </option>
+
+                    <option value="nameAsc">
+                        Name A-Z
+                    </option>
+
+                    <option value="nameDesc">
+                        Name Z-A
+                    </option>
+
+                    <option value="dateAsc">
+                        Date Oldest-Newest
+                    </option>
+
+                    <option value="dateDesc">
+                        Date Newest-Oldest
+                    </option>
+
+                    <option value="pointsAsc">
+                        Points Low-High
+                    </option>
+
+                    <option value="pointsDesc">
+                        Points High-Low
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                id="eventsLoading"
+                class="data-loading">
+
+                Loading events...
+
+            </div>
+
+
+            <div
+                id="eventsError"
+                class="data-error">
+            </div>
+
+
+            <div
+                id="eventsContainer"
+                class="data-grid">
+            </div>
+
+
+            <div
+                id="eventsPagination"
+                class="pagination">
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================
+             STUDENTS FROM JSON
+        ====================================== -->
+
+        <section class="card">
+
+            <h2>
+                👨‍🎓 Student Records
+            </h2>
+
+
+            <div class="data-controls">
+
+                <input
+                    type="text"
+                    id="studentSearch"
+                    placeholder="🔍 Search student...">
+
+
+                <select id="studentBranch">
+
+                    <option value="all">
+                        All Branches
+                    </option>
+
+                    <option value="CSE">
+                        CSE
+                    </option>
+
+                    <option value="IT">
+                        IT
+                    </option>
+
+                    <option value="CE">
+                        CE
+                    </option>
+
+                    <option value="AIML">
+                        AIML
+                    </option>
+
+                    <option value="EC">
+                        EC
+                    </option>
+
+                </select>
+
+
+                <select id="studentYear">
+
+                    <option value="all">
+                        All Years
+                    </option>
+
+                    <option value="1">
+                        First Year
+                    </option>
+
+                    <option value="2">
+                        Second Year
+                    </option>
+
+                    <option value="3">
+                        Third Year
+                    </option>
+
+                    <option value="4">
+                        Fourth Year
+                    </option>
+
+                </select>
+
+
+                <select id="studentSort">
+
+                    <option value="default">
+                        Sort By
+                    </option>
+
+                    <option value="nameAsc">
+                        Name A-Z
+                    </option>
+
+                    <option value="nameDesc">
+                        Name Z-A
+                    </option>
+
+                    <option value="yearAsc">
+                        Year Low-High
+                    </option>
+
+                    <option value="yearDesc">
+                        Year High-Low
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                id="studentsLoading"
+                class="data-loading">
+
+                Loading students...
+
+            </div>
+
+
+            <div
+                id="studentsError"
+                class="data-error">
+            </div>
+
+
+            <div
+                id="studentsContainer"
+                class="data-grid">
+            </div>
+
+
+            <div
+                id="studentsPagination"
+                class="pagination">
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+
+        <p>
+            &copy; 2026 Student Hub Portal.
+            All Rights Reserved.
+        </p>
+
+    </footer>
+
+
+</div>
+
+
+<!-- EXISTING SCRIPT -->
+
+<script src="js/script.js"></script>
+
+
+<!-- NEW JSON MODULES -->
+
+<script src="js/events.js"></script>
+
+<script src="js/students.js"></script>
+
+
 </body>
+
 </html>

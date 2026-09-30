@@ -8,16 +8,41 @@
 </head>
 <body>
     
-    <!-- <div class="right-side">
-        <img src="images/25-years.jpg" alt="25 Years of Excellence">
-    </div> -->
+    <!-- 1. NOTIFICATION BANNER -->
+    <div id="notificationBanner" class="notification-banner">
+        <div class="banner-content">
+            <span class="banner-tag">📢 Alert</span>
+            <span class="banner-text">Mid-Semester Exam schedules and Assignment deadlines are updated. Check your portal notices!</span>
+        </div>
+        <button id="closeBannerBtn" class="banner-close-btn" title="Dismiss notification" aria-label="Dismiss notification">&times;</button>
+    </div>
+
     <div class="container">
+        <!-- HEADER WITH HAMBURGER AND THEME TOGGLE -->
         <header class="header">
-            <h1>🎓 Student Hub Portal</h1>
-            <p>Welcome to the Student Management System</p>
+            <div class="header-wrapper">
+                <div>
+                    <h1>🎓 Student Hub Portal</h1>
+                    <p>Welcome to the Student Management System</p>
+                </div>
+                <div class="header-actions">
+                    <!-- Light / Dark Theme Toggle Button -->
+                    <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Toggle theme">
+                        <span class="theme-icon">🌙</span>
+                        <span class="theme-label">Dark Mode</span>
+                    </button>
+                    <!-- Mobile Hamburger Menu Button -->
+                    <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Toggle Navigation Menu">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
+                </div>
+            </div>
         </header>
 
-        <nav class="nav">
+        <!-- NAVIGATION MENU -->
+        <nav class="nav" id="mainNav">
             <a href="index.html">Home</a>
             <a href="login.html">Login</a>
             <a href="register.html">Register</a>
@@ -28,31 +53,140 @@
             <a href="assignment.html">Assignment</a>
             <a href="notice.html">Notice</a>
             <a href="profile.html">Profile</a>
-  
             <a href="contact.html">Contact Us</a>
         </nav>
 
         <main class="main">
+            <!-- 2. DYNAMIC SLIDER / CAROUSEL -->
+            <div class="slider-container">
+                <div class="slider-wrapper">
+                    <div class="slide" style="background: linear-gradient(135deg, #1e3a8a, #0f172a);">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-content">
+                            <span class="slide-badge">Academic Year 2026</span>
+                            <h3>Welcome to Student Hub Portal</h3>
+                            <p>Manage your courses, assignments, attendance, notices, and grades seamlessly in one unified dashboard.</p>
+                            <button type="button" class="slide-btn" data-modal-target="#quickInfoModal">Explore Features</button>
+                        </div>
+                    </div>
+                    <div class="slide" style="background: linear-gradient(135deg, #0284c7, #1e293b);">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-content">
+                            <span class="slide-badge">Exam Updates</span>
+                            <h3>Upcoming Mid-Term Examinations</h3>
+                            <p>Examination timetables and hall tickets are now available for all registered semester students.</p>
+                            <a href="notice.html"><button type="button" class="slide-btn">View Notices</button></a>
+                        </div>
+                    </div>
+                    <div class="slide" style="background: linear-gradient(135deg, #4f46e5, #0f172a);">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-content">
+                            <span class="slide-badge">Course Registration</span>
+                            <h3>New Semester Courses Available</h3>
+                            <p>Explore computer networking, web development, data structures, and advanced technology programs.</p>
+                            <a href="courses.html"><button type="button" class="slide-btn">Browse Courses</button></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Navigation Arrows -->
+                <button class="slider-arrow prev" aria-label="Previous Slide">&#10094;</button>
+                <button class="slider-arrow next" aria-label="Next Slide">&#10095;</button>
+                <!-- Dots Indicator -->
+                <div class="slider-dots"></div>
+            </div>
+
+            <!-- ABOUT SECTION -->
             <section class="card about-section">
                 <div class="about-text">
-                <h2>About Student Hub</h2>
-                <p>
-                    Student Hub Portal helps students and faculty manage courses,
-                    attendance, assignments, notices, and profiles in one place.
-                </p>
+                    <h2>About Student Hub</h2>
+                    <p>
+                        Student Hub Portal helps students and faculty manage courses,
+                        attendance, assignments, notices, and profiles in one place.
+                    </p>
+                    <div class="quick-actions-row">
+                        <!-- 3. MODAL TRIGGER BUTTON -->
+                        <button type="button" data-modal-target="#quickInfoModal">✨ Portal Guide &amp; Info</button>
+                        <a href="courses.html"><button type="button" class="btn-secondary">View Courses</button></a>
+                    </div>
                 </div>
                 <div class="about-image">
                     <img src="images/25-years.jpg" alt="studenthub">
                 </div>
             </section>
 
-    
+            <!-- 4. FAQ ACCORDION SECTION -->
+            <!-- ==========================================
+     DYNAMIC FAQ FROM JSON
+=========================================== -->
+
+<section class="card">
+
+    <h2>
+        ❓ Frequently Asked Questions (FAQ)
+    </h2>
+
+
+    <div
+        id="faqLoading"
+        style="
+            text-align:center;
+            padding:15px;
+            font-weight:bold;
+        ">
+
+        Loading FAQs...
+
+    </div>
+
+
+    <div
+        id="faqError"
+        style="
+            color:red;
+            font-weight:bold;
+            padding:10px;
+        ">
+    </div>
+
+
+    <div
+        id="faqContainer"
+        class="faq-list">
+    </div>
+
+</section>
         </main>
 
         <footer class="footer">
             <p>&copy; 2026 Student Hub Portal. All Rights Reserved.</p>
         </footer>
     </div>
+
+    <!-- 5. INTERACTIVE MODAL DIALOG -->
+    <div id="quickInfoModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modalTitle">🎓 Student Hub Quick Guide</h3>
+                <button class="modal-close-btn" data-modal-close aria-label="Close Modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Welcome to Student Hub Portal!</strong> Here is a quick summary of available features:</p>
+                <ul style="margin: 10px 0; padding-left: 20px; line-height: 1.7;">
+                    <li><strong>Courses:</strong> Browse semester curriculum and subject outlines.</li>
+                    <li><strong>Attendance:</strong> Monitor subject-wise attendance and minimum criteria.</li>
+                    <li><strong>Assignments:</strong> Track pending deadlines and save progress locally.</li>
+                    <li><strong>Notices:</strong> Stay up-to-date with campus circulars and exam schedules.</li>
+                    <li><strong>Dynamic UI:</strong> Enjoy responsive hamburger navigation and theme toggle.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" data-modal-close>Close</button>
+                <a href="courses.html"><button type="button">Explore Courses</button></a>
+            </div>
+        </div>
+    </div>
+
     <script src="js/script.js"></script>
+    <script src="js/faqs.js"></script>
 </body>
 </html>

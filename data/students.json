@@ -1,0 +1,107 @@
+[
+    {
+        "id": 1,
+        "name": "Dhruvi Kakadia",
+        "branch": "CSE",
+        "year": 1,
+        "email": "dhruvi@example.com"
+    },
+    {
+        "id": 2,
+        "name": "Rudra Patel",
+        "branch": "IT",
+        "year": 1,
+        "email": "rudra@example.com"
+    },
+    {
+        "id": 3,
+        "name": "Aarav Shah",
+        "branch": "CE",
+        "year": 2,
+        "email": "aarav@example.com"
+    },
+    {
+        "id": 4,
+        "name": "Diya Mehta",
+        "branch": "CSE",
+        "year": 2,
+        "email": "diya@example.com"
+    },
+    {
+        "id": 5,
+        "name": "Krish Joshi",
+        "branch": "AIML",
+        "year": 1,
+        "email": "krish@example.com"
+    },
+    {
+        "id": 6,
+        "name": "Mahi Desai",
+        "branch": "EC",
+        "year": 3,
+        "email": "mahi@example.com"
+    },
+    {
+        "id": 7,
+        "name": "Yash Patel",
+        "branch": "IT",
+        "year": 2,
+        "email": "yash@example.com"
+    },
+    {
+        "id": 8,
+        "name": "Riya Shah",
+        "branch": "CSE",
+        "year": 3,
+        "email": "riya@example.com"
+    },
+    {
+        "id": 9,
+        "name": "Dev Mehta",
+        "branch": "CE",
+        "year": 1,
+        "email": "dev@example.com"
+    },
+    {
+        "id": 10,
+        "name": "Jiya Joshi",
+        "branch": "AIML",
+        "year": 2,
+        "email": "jiya@example.com"
+    },
+    {
+        "id": 11,
+        "name": "Harsh Desai",
+        "branch": "EC",
+        "year": 4,
+        "email": "harsh@example.com"
+    },
+    {
+        "id": 12,
+        "name": "Anaya Patel",
+        "branch": "IT",
+        "year": 3,
+        "email": "anaya@example.com"
+    },
+    {
+        "id": 13,
+        "name": "Ved Shah",
+        "branch": "CSE",
+        "year": 4,
+        "email": "ved@example.com"
+    },
+    {
+        "id": 14,
+        "name": "Ishita Mehta",
+        "branch": "AIML",
+        "year": 3,
+        "email": "ishita@example.com"
+    },
+    {
+        "id": 15,
+        "name": "Om Joshi",
+        "branch": "CE",
+        "year": 4,
+        "email": "om@example.com"
+    }
+]
