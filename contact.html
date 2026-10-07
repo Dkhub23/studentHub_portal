@@ -1,61 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
-    <link rel="stylesheet" href="css/style.css">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Contact Us - Student Hub</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css">
+
+    <style>
+
+        .form-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .form-error {
+            background: #ffe5e5;
+            color: #b00020;
+            border: 1px solid #ffb3b3;
+        }
+
+        .form-success {
+            background: #e5f8ec;
+            color: #087a32;
+            border: 1px solid #9cdeb4;
+        }
+
+        .required {
+            color: red;
+        }
+
+    </style>
+
 </head>
+
+
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>🎓 Student Hub Portal</h1>
-            <p>Contact Us</p>
-        </header>
 
-        <nav class="nav">
-            <a href="index.html">Home</a>
-            <a href="login.html">Login</a>
-            <a href="register.html">Register</a>
-            <a href="student.html">Student</a>
-            <a href="faculty.html">Faculty</a>
-            <a href="courses.html">Courses</a>
-            <a href="attendance.html">Attendance</a>
-            <a href="assignment.html">Assignment</a>
-            <a href="notice.html">Notice</a>
-            <a href="profile.html">Profile</a>
-          
-            <a href="contact.html">Contact Us</a>
-        </nav>
+<div class="container">
 
-        <main class="main">
-            <section class="card form-box">
-                <h2>Send us a message</h2>
-                <form action="process.php" method="post">
-                    <table>
-                        <tr><td>Name:</td><td><input type="text" name="name" required></td></tr>
-                        <tr><td>Email:</td><td><input type="email" name="email" required></td></tr>
-                        <tr><td>Mobile Number:</td><td><input type="tel" name="mobile"></td></tr>
-                        <tr><td>Subject:</td><td><input type="text" name="subject" required></td></tr>
-                        <tr><td>Message:</td><td><textarea name="message" rows="5" cols="30" placeholder="Write your message here..." required></textarea></td></tr>
-                        <tr><td></td><td><input type="submit" value="Send Message"><input type="reset" value="Clear"></td></tr>
-                    </table>
-                </form>
-            </section>
 
-            <section class="card">
-                <h2>Contact Information</h2>
-                <p><b>College:</b> Student Hub Portal</p>
-                <p><b>Email:</b> studenthub@gmail.com</p>
-                <p><b>Phone:</b> +91 9876543210</p>
-                <p><b>Address:</b> CHARUSAT University, Changa, Gujarat, India</p>
-            </section>
-        </main>
+    <!-- HEADER -->
 
-        <footer class="footer">
-            <p>&copy; 2026 Student Hub Portal | Contact Us</p>
-        </footer>
-    </div>
-    <script src="js/script.js"></script>
+    <header class="header">
+
+        <h1>
+            🎓 Student Hub Portal
+        </h1>
+
+        <p>
+            Contact Us
+        </p>
+
+    </header>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="nav">
+
+        <a href="index.html">Home</a>
+
+        <a href="login.html">Login</a>
+
+        <a href="register.html">Register</a>
+
+        <a href="student.html">Student</a>
+
+        <a href="faculty.html">Faculty</a>
+
+        <a href="courses.html">Courses</a>
+
+        <a href="attendance.html">Attendance</a>
+
+        <a href="assignment.html">Assignment</a>
+
+        <a href="notice.html">Notice</a>
+
+        <a href="profile.html">Profile</a>
+
+        <a href="contact.html">Contact Us</a>
+
+    </nav>
+
+
+    <main class="main">
+
+
+        <!-- CONTACT FORM -->
+
+        <section class="card form-box">
+
+            <h2>
+                📩 Send Us a Message
+            </h2>
+
+
+            <form
+                action="process.php"
+                method="POST"
+                id="contactForm">
+
+
+                <table>
+
+                    <!-- NAME -->
+
+                    <tr>
+
+                        <td>
+                            Name:
+                            <span class="required">*</span>
+                        </td>
+
+                        <td>
+
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Enter your name"
+                                required>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- EMAIL -->
+
+                    <tr>
+
+                        <td>
+                            Email:
+                            <span class="required">*</span>
+                        </td>
+
+                        <td>
+
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                required>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- MOBILE -->
+
+                    <tr>
+
+                        <td>
+                            Mobile Number:
+                        </td>
+
+                        <td>
+
+                            <input
+                                type="tel"
+                                name="mobile"
+                                placeholder="Enter mobile number">
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- SUBJECT -->
+
+                    <tr>
+
+                        <td>
+                            Subject:
+                            <span class="required">*</span>
+                        </td>
+
+                        <td>
+
+                            <input
+                                type="text"
+                                name="subject"
+                                placeholder="Enter subject"
+                                required>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- MESSAGE -->
+
+                    <tr>
+
+                        <td>
+                            Message:
+                            <span class="required">*</span>
+                        </td>
+
+                        <td>
+
+                            <textarea
+                                name="message"
+                                rows="5"
+                                cols="30"
+                                placeholder="Write your message here..."
+                                required></textarea>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- BUTTONS -->
+
+                    <tr>
+
+                        <td></td>
+
+                        <td>
+
+                            <input
+                                type="submit"
+                                value="Send Message">
+
+                            <input
+                                type="reset"
+                                value="Clear">
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+            </form>
+
+        </section>
+
+
+        <!-- INFORMATION -->
+
+        <section class="card">
+
+            <h2>
+                📞 Contact Information
+            </h2>
+
+            <p>
+                <b>College:</b>
+                Student Hub Portal
+            </p>
+
+            <p>
+                <b>Email:</b>
+                studenthub@gmail.com
+            </p>
+
+            <p>
+                <b>Phone:</b>
+                +91 9876543210
+            </p>
+
+            <p>
+                <b>Address:</b>
+                CHARUSAT University, Changa, Gujarat, India
+            </p>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+
+        <p>
+            &copy; 2026 Student Hub Portal |
+            Contact Us
+        </p>
+
+    </footer>
+
+
+</div>
+
+
+<script src="js/script.js"></script>
+
 </body>
+
 </html>
