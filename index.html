@@ -3,36 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Hub Portal</title>
+    <title>CHARUSAT Student Hub Portal</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ── HOME PAGE SPECIFIC ── */
+        .hero-section {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%);
+            border-radius: var(--radius-lg);
+            padding: 40px 32px;
+            color: #fff;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+        .hero-left h2 {
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            font-weight: 800;
+            margin: 0 0 8px;
+            color: #fff;
+            line-height: 1.25;
+        }
+        .hero-left p {
+            margin: 0 0 20px;
+            color: #94a3b8;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            max-width: 460px;
+        }
+        .hero-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+        .hero-btns a { text-decoration: none; }
+        .btn-hero-primary {
+            background: #fff;
+            color: #1e3a8a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-hero-primary:hover { background: #e0f2fe; transform: translateY(-1px); }
+        .btn-hero-ghost {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-hero-ghost:hover { background: rgba(255,255,255,0.22); transform: translateY(-1px); }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.6px;
+            margin-bottom: 12px;
+        }
+        .hero-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        .hero-stat-item { text-align: center; }
+        .hero-stat-item strong {
+            display: block;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+        }
+        .hero-stat-item span {
+            font-size: 0.72rem;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* ── PORTAL CARDS ── */
+        .portals-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .portal-card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 20px 16px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--ink);
+            transition: all 0.2s;
+            display: block;
+        }
+        .portal-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 16px rgba(37,99,235,0.12);
+            transform: translateY(-3px);
+        }
+        .portal-card-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .portal-card h3 {
+            margin: 0 0 4px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--navy-dark);
+        }
+        .portal-card p {
+            margin: 0;
+            font-size: 0.76rem;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+        .portal-card.login-cta {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+        .portal-card.login-cta:hover { background: var(--primary-hover); }
+        .portal-card.login-cta h3, .portal-card.login-cta p { color: #fff; }
+
+        /* ── ABOUT + INSTITUTES ── */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .info-card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+        }
+        .info-card h3 {
+            margin: 0 0 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--navy-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-card p {
+            margin: 0 0 14px;
+            font-size: 0.83rem;
+            color: var(--ink-light);
+            line-height: 1.6;
+        }
+        .info-card p:last-child { margin-bottom: 0; }
+        .institute-list { list-style: none; padding: 0; margin: 0; }
+        .institute-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 0.82rem;
+        }
+        .institute-list li:last-child { border-bottom: none; }
+        .inst-code {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        [data-theme="dark"] .inst-code { background: rgba(59,130,246,0.2); color: #93c5fd; }
+        .inst-name { font-weight: 700; color: var(--navy-dark); display: block; line-height: 1.3; }
+        .inst-prog { color: var(--muted); font-size: 0.72rem; }
+
+        @media (max-width: 700px) {
+            .portals-grid { grid-template-columns: 1fr 1fr; }
+            .about-grid { grid-template-columns: 1fr; }
+            .hero-section { padding: 24px 18px; }
+        }
+        @media (max-width: 480px) {
+            .portals-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-    
-    <!-- 1. NOTIFICATION BANNER -->
+
+    <!-- NOTIFICATION BANNER -->
     <div id="notificationBanner" class="notification-banner">
         <div class="banner-content">
-            <span class="banner-tag">📢 Alert</span>
+            <span class="banner-tag">📢 Notice</span>
             <span class="banner-text">Mid-Semester Exam schedules and Assignment deadlines are updated. Check your portal notices!</span>
         </div>
-        <button id="closeBannerBtn" class="banner-close-btn" title="Dismiss notification" aria-label="Dismiss notification">&times;</button>
+        <button id="closeBannerBtn" class="banner-close-btn" aria-label="Dismiss">&times;</button>
     </div>
 
     <div class="container">
-        <!-- HEADER WITH HAMBURGER AND THEME TOGGLE -->
+        <!-- HEADER -->
         <header class="header">
             <div class="header-wrapper">
                 <div>
-                    <h1>🎓 Student Hub Portal</h1>
-                    <p>Welcome to the Student Management System</p>
+                    <h1>🎓 CHARUSAT Student Hub</h1>
+                    <p>Charotar University of Science and Technology · Changa, Gujarat</p>
                 </div>
                 <div class="header-actions">
-                    <!-- Light / Dark Theme Toggle Button -->
                     <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Toggle theme">
                         <span class="theme-icon">🌙</span>
                         <span class="theme-label">Dark Mode</span>
                     </button>
-                    <!-- Mobile Hamburger Menu Button -->
-                    <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Toggle Navigation Menu">
+                    <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Toggle menu">
                         <span class="hamburger-line"></span>
                         <span class="hamburger-line"></span>
                         <span class="hamburger-line"></span>
@@ -41,13 +237,14 @@
             </div>
         </header>
 
-        <!-- NAVIGATION MENU -->
+        <!-- NAV -->
         <nav class="nav" id="mainNav">
-            <a href="index.html">Home</a>
+            <a href="index.html" class="active">Home</a>
             <a href="login.html">Login</a>
             <a href="register.html">Register</a>
             <a href="student.html">Student</a>
             <a href="faculty.html">Faculty</a>
+            <a href="admin.html">Admin</a>
             <a href="courses.html">Courses</a>
             <a href="attendance.html">Attendance</a>
             <a href="assignment.html">Assignment</a>
@@ -57,135 +254,122 @@
         </nav>
 
         <main class="main">
-            <!-- 2. DYNAMIC SLIDER / CAROUSEL -->
-            <div class="slider-container">
-                <div class="slider-wrapper">
-                    <div class="slide" style="background: linear-gradient(135deg, #1e3a8a, #0f172a);">
-                        <div class="slide-overlay"></div>
-                        <div class="slide-content">
-                            <span class="slide-badge">Academic Year 2026</span>
-                            <h3>Welcome to Student Hub Portal</h3>
-                            <p>Manage your courses, assignments, attendance, notices, and grades seamlessly in one unified dashboard.</p>
-                            <button type="button" class="slide-btn" data-modal-target="#quickInfoModal">Explore Features</button>
-                        </div>
-                    </div>
-                    <div class="slide" style="background: linear-gradient(135deg, #0284c7, #1e293b);">
-                        <div class="slide-overlay"></div>
-                        <div class="slide-content">
-                            <span class="slide-badge">Exam Updates</span>
-                            <h3>Upcoming Mid-Term Examinations</h3>
-                            <p>Examination timetables and hall tickets are now available for all registered semester students.</p>
-                            <a href="notice.html"><button type="button" class="slide-btn">View Notices</button></a>
-                        </div>
-                    </div>
-                    <div class="slide" style="background: linear-gradient(135deg, #4f46e5, #0f172a);">
-                        <div class="slide-overlay"></div>
-                        <div class="slide-content">
-                            <span class="slide-badge">Course Registration</span>
-                            <h3>New Semester Courses Available</h3>
-                            <p>Explore computer networking, web development, data structures, and advanced technology programs.</p>
-                            <a href="courses.html"><button type="button" class="slide-btn">Browse Courses</button></a>
-                        </div>
+
+            <!-- HERO SECTION -->
+            <div class="hero-section">
+                <div class="hero-left">
+                    <span class="hero-badge">🏛️ NAAC Accredited · Grade A+</span>
+                    <h2>Welcome to CHARUSAT<br>Academic Portal</h2>
+                    <p>One unified platform for Students, Faculty, and Administrators. Access your courses, attendance, assignments, and results all in one place.</p>
+                    <div class="hero-btns">
+                        <a href="login.html"><button class="btn-hero-primary">🔐 Login to Portal</button></a>
+                        <a href="register.html"><button class="btn-hero-ghost">Register Now</button></a>
                     </div>
                 </div>
-                <!-- Navigation Arrows -->
-                <button class="slider-arrow prev" aria-label="Previous Slide">&#10094;</button>
-                <button class="slider-arrow next" aria-label="Next Slide">&#10095;</button>
-                <!-- Dots Indicator -->
-                <div class="slider-dots"></div>
+                <div class="hero-stats">
+                    <div class="hero-stat-item"><strong>10K+</strong><span>Students</span></div>
+                    <div class="hero-stat-item"><strong>550+</strong><span>Faculty</span></div>
+                    <div class="hero-stat-item"><strong>9</strong><span>Institutes</span></div>
+                    <div class="hero-stat-item"><strong>A+</strong><span>NAAC Grade</span></div>
+                </div>
             </div>
 
-            <!-- ABOUT SECTION -->
-            <section class="card about-section">
-                <div class="about-text">
-                    <h2>About Student Hub</h2>
-                    <p>
-                        Student Hub Portal helps students and faculty manage courses,
-                        attendance, assignments, notices, and profiles in one place.
-                    </p>
-                    <div class="quick-actions-row">
-                        <!-- 3. MODAL TRIGGER BUTTON -->
-                        <button type="button" data-modal-target="#quickInfoModal">✨ Portal Guide &amp; Info</button>
-                        <a href="courses.html"><button type="button" class="btn-secondary">View Courses</button></a>
-                    </div>
+            <!-- ROLE PORTAL CARDS -->
+            <div class="portals-grid">
+                <a href="login.html?role=student" class="portal-card">
+                    <span class="portal-card-icon">🎓</span>
+                    <h3>Student Portal</h3>
+                    <p>Courses, Attendance &amp; Assignments</p>
+                </a>
+                <a href="login.html?role=faculty" class="portal-card">
+                    <span class="portal-card-icon">👨‍🏫</span>
+                    <h3>Faculty Portal</h3>
+                    <p>Directory, Classes &amp; Grades</p>
+                </a>
+                <a href="login.html?role=admin" class="portal-card">
+                    <span class="portal-card-icon">👑</span>
+                    <h3>Admin Portal</h3>
+                    <p>Campus Management &amp; Reports</p>
+                </a>
+            </div>
+
+            <!-- ABOUT + INSTITUTES -->
+            <div class="about-grid">
+                <!-- About CHARUSAT -->
+                <div class="info-card">
+                    <h3>🏛️ About CHARUSAT</h3>
+                    <p>Charotar University of Science and Technology (CHARUSAT) is a premier private university established in 2009 in Changa, Anand, Gujarat. Accredited <strong>NAAC 'A+'</strong>, it offers cutting-edge programs across engineering, technology, pharmacy, and management.</p>
+                    <p>With 105+ acres of Wi-Fi enabled green campus, world-class labs, and 400+ corporate recruiters, CHARUSAT stands as one of Gujarat's top educational institutions.</p>
+                    <a href="courses.html"><button type="button" class="btn-secondary" style="margin-top: 4px; font-size: 0.82rem; padding: 8px 14px;">Browse Programs →</button></a>
                 </div>
-                <div class="about-image">
-                    <img src="images/25-years.jpg" alt="studenthub">
+
+                <!-- Constituent Institutes -->
+                <div class="info-card">
+                    <h3>🏫 Constituent Institutes</h3>
+                    <ul class="institute-list">
+                        <li>
+                            <span class="inst-code">CSPIT</span>
+                            <div><span class="inst-name">Chandubhai S Patel Institute of Technology</span><span class="inst-prog">CE, IT, CSE, ME, Civil, EC</span></div>
+                        </li>
+                        <li>
+                            <span class="inst-code">DEPSTAR</span>
+                            <div><span class="inst-name">Devang Patel Institute of Advance Technology</span><span class="inst-prog">AI/ML, Data Science, CSE</span></div>
+                        </li>
+                        <li>
+                            <span class="inst-code">CMPICA</span>
+                            <div><span class="inst-name">Chandaben Mohanbhai Patel Institute</span><span class="inst-prog">BCA, MCA, M.Sc IT</span></div>
+                        </li>
+                        <li>
+                            <span class="inst-code">RPCP</span>
+                            <div><span class="inst-name">Ramanbhai Patel College of Pharmacy</span><span class="inst-prog">B.Pharm, M.Pharm</span></div>
+                        </li>
+                        <li>
+                            <span class="inst-code">I2IM</span>
+                            <div><span class="inst-name">Indukaka Ipcowala Institute of Management</span><span class="inst-prog">BBA, MBA</span></div>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+
+            <!-- FAQ SECTION -->
+            <section class="card">
+                <h2>❓ Frequently Asked Questions</h2>
+                <div id="faqLoading" style="text-align:center; padding:15px; font-weight:bold; color: var(--muted);">Loading FAQs...</div>
+                <div id="faqError" style="color: var(--danger); font-weight:bold; padding:10px;"></div>
+                <div id="faqContainer" class="faq-list"></div>
             </section>
 
-            <!-- 4. FAQ ACCORDION SECTION -->
-            <!-- ==========================================
-     DYNAMIC FAQ FROM JSON
-=========================================== -->
-
-<section class="card">
-
-    <h2>
-        ❓ Frequently Asked Questions (FAQ)
-    </h2>
-
-
-    <div
-        id="faqLoading"
-        style="
-            text-align:center;
-            padding:15px;
-            font-weight:bold;
-        ">
-
-        Loading FAQs...
-
-    </div>
-
-
-    <div
-        id="faqError"
-        style="
-            color:red;
-            font-weight:bold;
-            padding:10px;
-        ">
-    </div>
-
-
-    <div
-        id="faqContainer"
-        class="faq-list">
-    </div>
-
-</section>
         </main>
 
         <footer class="footer">
-            <p>&copy; 2026 Student Hub Portal. All Rights Reserved.</p>
+            <p>&copy; 2026 CHARUSAT · Charotar University of Science and Technology. All Rights Reserved.</p>
         </footer>
     </div>
 
-    <!-- 5. INTERACTIVE MODAL DIALOG -->
+    <!-- QUICK INFO MODAL -->
     <div id="quickInfoModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 id="modalTitle">🎓 Student Hub Quick Guide</h3>
-                <button class="modal-close-btn" data-modal-close aria-label="Close Modal">&times;</button>
+                <h3 id="modalTitle">🎓 CHARUSAT Portal Guide</h3>
+                <button class="modal-close-btn" data-modal-close aria-label="Close">&times;</button>
             </div>
             <div class="modal-body">
-                <p><strong>Welcome to Student Hub Portal!</strong> Here is a quick summary of available features:</p>
-                <ul style="margin: 10px 0; padding-left: 20px; line-height: 1.7;">
-                    <li><strong>Courses:</strong> Browse semester curriculum and subject outlines.</li>
-                    <li><strong>Attendance:</strong> Monitor subject-wise attendance and minimum criteria.</li>
-                    <li><strong>Assignments:</strong> Track pending deadlines and save progress locally.</li>
-                    <li><strong>Notices:</strong> Stay up-to-date with campus circulars and exam schedules.</li>
-                    <li><strong>Dynamic UI:</strong> Enjoy responsive hamburger navigation and theme toggle.</li>
+                <p><strong>Welcome!</strong> Here's a quick summary of the portal's features:</p>
+                <ul style="margin: 10px 0; padding-left: 20px; line-height: 1.8;">
+                    <li><strong>👑 Admin:</strong> Manage student registries, faculty, and circulars.</li>
+                    <li><strong>👨‍🏫 Faculty:</strong> View directory, courses, and student attendance.</li>
+                    <li><strong>🎓 Student:</strong> Track attendance, assignments, and academic progress.</li>
+                    <li><strong>🔐 Role Login:</strong> Select your role at login to reach the right dashboard.</li>
                 </ul>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-secondary" data-modal-close>Close</button>
-                <a href="courses.html"><button type="button">Explore Courses</button></a>
+                <a href="login.html"><button type="button">Go to Login →</button></a>
             </div>
         </div>
     </div>
 
+    <script src="js/auth.js"></script>
     <script src="js/script.js"></script>
     <script src="js/faqs.js"></script>
 </body>

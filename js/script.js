@@ -441,13 +441,52 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (isValid) {
                 const courseVal = form.elements["course"] ? form.elements["course"].value : "";
+                const genderVal = gender ? gender.value : "Unspecified";
+
+                const studentRecord = {
+                    name: name,
+                    enrollment: enrollment,
+                    email: email,
+                    course: courseVal,
+                    gender: genderVal,
+                    dob: dob,
+                    mobile: mobile
+                };
+
+                // Record student and audit trail for Admin Priority view
+                if (window.AuthGuard && typeof window.AuthGuard.recordNewStudentRegistration === "function") {
+                    window.AuthGuard.recordNewStudentRegistration(studentRecord);
+                } else {
+                    try {
+                        const existing = JSON.parse(localStorage.getItem("studentHubRegisteredStudents")) || [];
+                        const now = new Date().toLocaleString();
+                        existing.unshift({
+                            id: existing.length + 1,
+                            name: name,
+                            enrollment: enrollment,
+                            email: email,
+                            course: courseVal,
+                            gender: genderVal,
+                            dob: dob,
+                            mobile: mobile,
+                            registeredAt: now,
+                            status: "Verified",
+                            history: [
+                                { timestamp: now, event: "Account Registration", detail: "Self-registered via Student Hub Portal" },
+                                { timestamp: now, event: "Verification Completed", detail: "Enrollment ID and Email verified" }
+                            ]
+                        });
+                        localStorage.setItem("studentHubRegisteredStudents", JSON.stringify(existing));
+                    } catch(e) {}
+                }
+
                 localStorage.setItem("studentHubUser", JSON.stringify({
                     name: name,
                     enrollment: enrollment,
                     email: email,
                     course: courseVal
                 }));
-                window.location.href = "login.html";
+                window.location.href = "login.html?role=student&registered=true";
             }
         });
 

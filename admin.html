@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard · CHARUSAT</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            AuthGuard.enforcePageAccess(["admin"], "CHARUSAT Administrator Console");
+        });
+    </script>
+    <style>
+        /* ── ADMIN PAGE SPECIFIC ── */
+        .admin-welcome-bar {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            border-radius: var(--radius-lg);
+            padding: 22px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .admin-welcome-bar h2 {
+            margin: 0 0 4px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #fff;
+        }
+        .admin-welcome-bar p { margin: 0; color: #94a3b8; font-size: 0.82rem; }
+        .admin-role-pill {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+        .btn-logout {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.83rem;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .btn-logout:hover { background: rgba(255,255,255,0.22); }
+
+        /* Metrics row */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .metric-box {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .metric-icon {
+            width: 40px; height: 40px;
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; flex-shrink: 0;
+        }
+        .metric-icon.blue  { background: rgba(37,99,235,0.1); }
+        .metric-icon.green { background: rgba(16,185,129,0.1); }
+        .metric-icon.amber { background: rgba(245,158,11,0.1); }
+        .metric-icon.purple{ background: rgba(99,102,241,0.1); }
+        .metric-info h3 { margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--navy-dark); }
+        .metric-info p { margin: 2px 0 0; font-size: 0.7rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+
+        /* Quick links */
+        .quick-links-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .quick-link-card {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 14px 12px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--ink);
+            transition: all 0.18s;
+            display: block;
+        }
+        .quick-link-card:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        .quick-link-card span { font-size: 1.4rem; display: block; margin-bottom: 6px; }
+        .quick-link-card strong { font-size: 0.82rem; font-weight: 700; color: var(--navy-dark); display: block; }
+        .quick-link-card small { font-size: 0.7rem; color: var(--muted); }
+
+        /* Priority badge */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 3px 9px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        /* Table controls */
+        .table-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .table-controls input, .table-controls select {
+            padding: 7px 11px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            background: var(--paper);
+            color: var(--ink);
+            font-size: 0.83rem;
+        }
+        .table-controls input { flex: 1; min-width: 200px; }
+
+        /* History button */
+        .btn-history {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid rgba(37,99,235,0.25);
+            padding: 4px 9px;
+            border-radius: var(--radius-sm);
+            font-size: 0.73rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s;
+            white-space: nowrap;
+        }
+        .btn-history:hover { background: var(--primary); color: #fff; }
+        [data-theme="dark"] .btn-history { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.3); color: #93c5fd; }
+
+        /* History Modal */
+        .history-overlay {
+            position: fixed; inset: 0;
+            background: rgba(15,23,42,0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 99999;
+        }
+        .history-overlay.open { display: flex; }
+        .history-modal {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            max-width: 560px;
+            width: 100%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.22s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(18px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .history-modal-head {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .history-modal-head h3 { margin: 0; font-size: 1rem; font-weight: 800; color: var(--navy-dark); }
+        .history-modal-body { padding: 18px; overflow-y: auto; flex: 1; }
+        .student-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            background: var(--primary-light);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 0.8rem;
+        }
+        [data-theme="dark"] .student-info-grid { background: rgba(59,130,246,0.1); }
+        .student-info-grid div strong { color: var(--muted); font-weight: 700; font-size: 0.68rem; text-transform: uppercase; display: block; margin-bottom: 2px; }
+
+        /* Timeline */
+        .timeline { padding-left: 22px; position: relative; }
+        .timeline::before {
+            content: ''; position: absolute;
+            left: 6px; top: 4px; bottom: 4px;
+            width: 2px; background: var(--line);
+        }
+        .tl-step { position: relative; margin-bottom: 16px; }
+        .tl-step:last-child { margin-bottom: 0; }
+        .tl-dot {
+            position: absolute; left: -22px; top: 3px;
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2.5px solid var(--paper);
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+        .tl-time { font-size: 0.69rem; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
+        .tl-title { font-size: 0.85rem; font-weight: 800; color: var(--navy-dark); margin-bottom: 3px; }
+        .tl-desc { font-size: 0.78rem; color: var(--ink-light); line-height: 1.45; margin: 0; }
+
+        .history-modal-foot {
+            padding: 10px 18px;
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 800px) {
+            .metrics-row { grid-template-columns: repeat(2, 1fr); }
+            .quick-links-row { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 500px) {
+            .metrics-row { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-wrapper">
+                <div>
+                    <h1>🎓 CHARUSAT Student Hub</h1>
+                    <p>Administrator Console · University Management</p>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Toggle theme">
+                        <span class="theme-icon">🌙</span>
+                        <span class="theme-label">Dark Mode</span>
+                    </button>
+                    <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Toggle menu">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- NAV -->
+        <nav class="nav" id="mainNav">
+            <a href="index.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Register</a>
+            <a href="student.html">Student</a>
+            <a href="faculty.html">Faculty</a>
+            <a href="admin.html" class="active">Admin</a>
+            <a href="courses.html">Courses</a>
+            <a href="attendance.html">Attendance</a>
+            <a href="assignment.html">Assignment</a>
+            <a href="notice.html">Notice</a>
+            <a href="profile.html">Profile</a>
+            <a href="contact.html">Contact Us</a>
+        </nav>
+
+        <main class="main">
+
+            <!-- WELCOME BAR -->
+            <div class="admin-welcome-bar">
+                <div>
+                    <span class="admin-role-pill">👑 ADMINISTRATOR</span>
+                    <h2 id="adminWelcomeTitle">Welcome, Admin</h2>
+                    <p>Full management access to student registry, faculty directory, and campus circulars.</p>
+                </div>
+                <button type="button" id="adminLogoutBtn" class="btn-logout">🚪 Sign Out</button>
+            </div>
+
+            <!-- METRICS -->
+            <div class="metrics-row">
+                <div class="metric-box">
+                    <div class="metric-icon blue">🎓</div>
+                    <div class="metric-info">
+                        <h3 id="statStudentCount">—</h3>
+                        <p>Registered Students</p>
+                    </div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-icon green">👨‍🏫</div>
+                    <div class="metric-info">
+                        <h3>560+</h3>
+                        <p>Faculty &amp; Staff</p>
+                    </div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-icon amber">📚</div>
+                    <div class="metric-info">
+                        <h3>128</h3>
+                        <p>Active Courses</p>
+                    </div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-icon purple">🏛️</div>
+                    <div class="metric-info">
+                        <h3>9</h3>
+                        <p>Institutes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK LINKS -->
+            <div class="quick-links-row">
+                <a href="#registrySection" class="quick-link-card">
+                    <span>📋</span>
+                    <strong>Student Registry</strong>
+                    <small>View all registrations</small>
+                </a>
+                <a href="faculty.html" class="quick-link-card">
+                    <span>👨‍🏫</span>
+                    <strong>Faculty Directory</strong>
+                    <small>Staff &amp; departments</small>
+                </a>
+                <a href="notice.html" class="quick-link-card">
+                    <span>📢</span>
+                    <strong>Post Circular</strong>
+                    <small>Broadcast notices</small>
+                </a>
+                <a href="courses.html" class="quick-link-card">
+                    <span>📖</span>
+                    <strong>Courses Catalog</strong>
+                    <small>View all programs</small>
+                </a>
+            </div>
+
+            <!-- STUDENT REGISTRY (Admin Priority) -->
+            <section class="card" id="registrySection">
+                <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+                    <div>
+                        <span class="priority-badge">👑 Admin Exclusive — Priority Access</span>
+                        <h2 style="margin: 4px 0 4px;">🎓 Master Student Registry</h2>
+                        <p style="margin:0; font-size:0.82rem; color:var(--muted);">Complete registration records and audit history. Faculty &amp; Students cannot access this section.</p>
+                    </div>
+                    <span id="registryCount" class="status-badge active" style="font-size:0.78rem; padding:5px 11px; align-self:flex-start;">Loading…</span>
+                </div>
+
+                <!-- Search & Filter -->
+                <div class="table-controls">
+                    <input type="text" id="studentSearch" placeholder="🔍 Search by name, enrollment, or email…">
+                    <select id="courseFilter">
+                        <option value="ALL">All Courses</option>
+                        <option value="B.Tech CSE">B.Tech CSE</option>
+                        <option value="B.Tech IT">B.Tech IT</option>
+                        <option value="B.Tech CE">B.Tech CE</option>
+                        <option value="BCA">BCA</option>
+                        <option value="MCA">MCA</option>
+                    </select>
+                    <a href="register.html" target="_blank">
+                        <button type="button" class="btn-secondary" style="font-size:0.8rem; padding: 7px 12px; white-space:nowrap;">+ Add Student</button>
+                    </a>
+                </div>
+
+                <!-- Table -->
+                <div style="overflow-x:auto;">
+                    <table style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Enrollment</th>
+                                <th>Student Name</th>
+                                <th>Course</th>
+                                <th>Email</th>
+                                <th>Registered</th>
+                                <th>Status</th>
+                                <th style="text-align:center;">History</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <tr><td colspan="7" style="text-align:center; padding:20px; color:var(--muted);">Loading registry…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 CHARUSAT · Charotar University of Science and Technology. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <!-- HISTORY MODAL -->
+    <div id="historyOverlay" class="history-overlay" role="dialog" aria-modal="true">
+        <div class="history-modal">
+            <div class="history-modal-head">
+                <h3>📜 Student Audit History <span class="priority-badge" style="margin-left:8px; font-size:0.65rem;">Admin View</span></h3>
+                <button type="button" id="closeHistoryBtn" class="modal-close-btn" aria-label="Close">&times;</button>
+            </div>
+            <div class="history-modal-body">
+                <div id="historyStudentInfo" class="student-info-grid"></div>
+                <h4 style="margin: 0 0 10px; font-size:0.85rem; font-weight:800; color:var(--navy-dark);">Chronological Event Trail</h4>
+                <div id="historyTimeline" class="timeline"></div>
+            </div>
+            <div class="history-modal-foot">
+                <button type="button" id="closeHistoryBtnBottom" class="btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // ── Welcome title
+            const user = AuthGuard.getCurrentUser();
+            const titleEl = document.getElementById("adminWelcomeTitle");
+            if (user && titleEl) titleEl.textContent = "Welcome, " + (user.displayName || user.username);
+
+            // ── Logout
+            document.getElementById("adminLogoutBtn").addEventListener("click", function () {
+                AuthGuard.logout();
+            });
+
+            // ── Load registry
+            const result = AuthGuard.getAdminStudentRegistry();
+            let allStudents = result.data || [];
+
+            const tbody = document.getElementById("studentsTableBody");
+            const countEl = document.getElementById("registryCount");
+            const statEl = document.getElementById("statStudentCount");
+            const searchEl = document.getElementById("studentSearch");
+            const courseEl = document.getElementById("courseFilter");
+
+            function renderTable(list) {
+                if (countEl) countEl.textContent = list.length + " Students";
+                if (statEl) statEl.textContent = list.length;
+
+                if (!list.length) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--muted);">No students found.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = list.map(function (s) {
+                    var histLen = (s.history && s.history.length) || 1;
+                    var statusClass = s.status === "Verified" ? "active" : "pending";
+                    return '<tr>' +
+                        '<td><strong>' + s.enrollment + '</strong></td>' +
+                        '<td>' + s.name + '</td>' +
+                        '<td><span class="status-badge" style="background:#e0e7ff;color:#3730a3;">' + s.course + '</span></td>' +
+                        '<td><a href="mailto:' + s.email + '" style="color:var(--primary);font-size:0.8rem;">' + s.email + '</a></td>' +
+                        '<td><small style="color:var(--muted);">' + (s.registeredAt || "—") + '</small></td>' +
+                        '<td><span class="status-badge ' + statusClass + '">● ' + (s.status || "Active") + '</span></td>' +
+                        '<td style="text-align:center;"><button class="btn-history" data-enrollment="' + s.enrollment + '">📜 History (' + histLen + ')</button></td>' +
+                    '</tr>';
+                }).join("");
+
+                // Re-bind history buttons
+                tbody.querySelectorAll(".btn-history").forEach(function (btn) {
+                    btn.addEventListener("click", function () {
+                        openHistory(this.getAttribute("data-enrollment"));
+                    });
+                });
+            }
+
+            function filterAndRender() {
+                var q = searchEl ? searchEl.value.trim().toLowerCase() : "";
+                var c = courseEl ? courseEl.value : "ALL";
+                var filtered = allStudents.filter(function (s) {
+                    var matchQ = !q || s.name.toLowerCase().includes(q) || s.enrollment.toLowerCase().includes(q) || s.email.toLowerCase().includes(q);
+                    var matchC = c === "ALL" || s.course === c;
+                    return matchQ && matchC;
+                });
+                renderTable(filtered);
+            }
+
+            renderTable(allStudents);
+            if (searchEl) searchEl.addEventListener("input", filterAndRender);
+            if (courseEl) courseEl.addEventListener("change", filterAndRender);
+
+            // ── History Modal
+            const overlay = document.getElementById("historyOverlay");
+            const infoBox = document.getElementById("historyStudentInfo");
+            const timeline = document.getElementById("historyTimeline");
+
+            function openHistory(enrollment) {
+                var res = AuthGuard.getStudentAuditHistory(enrollment);
+                if (!res.authorized) { alert(res.error); return; }
+                var s = res.student;
+                if (!s) return;
+
+                infoBox.innerHTML =
+                    '<div><strong>Name</strong>' + s.name + '</div>' +
+                    '<div><strong>Enrollment</strong>' + s.enrollment + '</div>' +
+                    '<div><strong>Course</strong>' + s.course + '</div>' +
+                    '<div><strong>Email</strong>' + s.email + '</div>' +
+                    '<div><strong>Mobile</strong>' + (s.mobile || "—") + '</div>' +
+                    '<div><strong>Registered</strong>' + (s.registeredAt || "—") + '</div>';
+
+                timeline.innerHTML = (res.history || []).map(function (ev) {
+                    return '<div class="tl-step">' +
+                        '<div class="tl-dot"></div>' +
+                        '<div class="tl-time">🕒 ' + ev.timestamp + '</div>' +
+                        '<div class="tl-title">' + ev.event + '</div>' +
+                        '<p class="tl-desc">' + ev.detail + '</p>' +
+                    '</div>';
+                }).join("") || '<p style="color:var(--muted);font-size:0.83rem;">No events logged yet.</p>';
+
+                overlay.classList.add("open");
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeHistory() {
+                overlay.classList.remove("open");
+                document.body.style.overflow = "";
+            }
+
+            document.getElementById("closeHistoryBtn").addEventListener("click", closeHistory);
+            document.getElementById("closeHistoryBtnBottom").addEventListener("click", closeHistory);
+            overlay.addEventListener("click", function (e) { if (e.target === overlay) closeHistory(); });
+        });
+    </script>
+</body>
+</html>

@@ -3,23 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Hub Login</title>
+    <title>Login · CHARUSAT Student Hub</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ── LOGIN PAGE ── */
+        .login-page-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* Left side: Info panel */
+        .login-info-panel {
+            background: linear-gradient(160deg, #1e3a8a 0%, #1e293b 100%);
+            border-radius: var(--radius-lg);
+            padding: 32px 28px;
+            color: #fff;
+        }
+        .login-info-panel h2 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin: 0 0 10px;
+            color: #fff;
+        }
+        .login-info-panel p {
+            font-size: 0.86rem;
+            color: #94a3b8;
+            line-height: 1.65;
+            margin: 0 0 20px;
+        }
+        .login-portal-list { list-style: none; padding: 0; margin: 0 0 24px; }
+        .login-portal-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            color: #fff;
+        }
+        .login-portal-list li:last-child { margin-bottom: 0; }
+        .login-portal-list li:hover { background: rgba(255,255,255,0.15); }
+        .login-portal-list li .lpl-icon {
+            font-size: 1.2rem;
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .login-portal-list li .lpl-text strong { display: block; font-size: 0.85rem; color: #fff; }
+        .login-portal-list li .lpl-text span { font-size: 0.72rem; color: #94a3b8; font-weight: 400; }
+        .uni-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.22);
+            color: #e2e8f0;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+        }
+
+        /* Right side: Login form */
+        .login-form-panel {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+        }
+        .login-form-panel h2 {
+            margin: 0 0 4px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--navy-dark);
+        }
+        .login-form-panel .subtitle {
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin: 0 0 20px;
+        }
+
+        /* Role Cards */
+        .role-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .role-tab {
+            border: 2px solid var(--line);
+            background: var(--paper);
+            border-radius: var(--radius-md);
+            padding: 10px 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.18s;
+            position: relative;
+        }
+        .role-tab:hover { border-color: var(--primary); background: var(--primary-light); }
+        .role-tab.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+        }
+        [data-theme="dark"] .role-tab.active {
+            background: rgba(59,130,246,0.15);
+            border-color: #60a5fa;
+        }
+        .role-tab input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+        .role-tab-icon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+        .role-tab-name { font-size: 0.8rem; font-weight: 700; color: var(--navy-dark); display: block; }
+        .role-tab-check {
+            position: absolute; top: 5px; right: 5px;
+            width: 14px; height: 14px; border-radius: 50%;
+            background: var(--primary); color: #fff;
+            font-size: 9px; font-weight: 800;
+            display: none; align-items: center; justify-content: center;
+        }
+        .role-tab.active .role-tab-check { display: flex; }
+
+        /* Role indicator */
+        .role-indicator {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--primary-light);
+            border: 1px solid rgba(37,99,235,0.18);
+            border-radius: var(--radius-sm);
+            padding: 7px 11px;
+            margin-bottom: 16px;
+        }
+        [data-theme="dark"] .role-indicator {
+            background: rgba(59,130,246,0.12);
+            border-color: rgba(59,130,246,0.3);
+            color: #93c5fd;
+        }
+
+        /* Form fields */
+        .form-group { margin-bottom: 12px; }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--navy-dark);
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            background: var(--paper);
+            color: var(--ink);
+            font-size: 0.87rem;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        .pw-wrap { position: relative; }
+        .pw-wrap input { padding-right: 36px; }
+        .pw-toggle {
+            position: absolute; right: 10px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none;
+            color: var(--muted); cursor: pointer; font-size: 0.9rem; padding: 0;
+        }
+        .pw-toggle:hover { color: var(--primary); }
+
+        /* Remember + Actions row */
+        .form-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            font-size: 0.8rem;
+        }
+        .form-meta label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--ink-light); }
+
+        /* Submit btn */
+        .btn-login {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-login:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* Alert */
+        .login-alert {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.83rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+        .login-alert.show { display: flex; }
+        .login-alert-success { background: var(--success-bg); color: var(--success); border: 1px solid rgba(16,185,129,0.25); }
+        .login-alert-error { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(239,68,68,0.25); }
+
+        /* Demo quick-fill */
+        .demo-strip {
+            border-top: 1px solid var(--line);
+            margin-top: 16px;
+            padding-top: 12px;
+        }
+        .demo-strip-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 8px;
+        }
+        .demo-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+        .demo-btn {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            color: var(--ink-light);
+            font-size: 0.73rem;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+        .demo-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        /* Footer links */
+        .form-footer-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--line);
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+        .form-footer-links a { color: var(--primary); font-weight: 700; text-decoration: none; }
+        .form-footer-links a:hover { text-decoration: underline; }
+
+        @media (max-width: 700px) {
+            .login-page-wrap { grid-template-columns: 1fr; }
+            .login-info-panel { display: none; }
+        }
+    </style>
 </head>
 <body>
-    
     <div class="container">
+        <!-- HEADER -->
         <header class="header">
-            <h1>🎓 Student Hub Portal</h1>
-            <p>Login to continue</p>
+            <div class="header-wrapper">
+                <div>
+                    <h1>🎓 CHARUSAT Student Hub</h1>
+                    <p>Secure Role-Based University Portal Login</p>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Toggle theme">
+                        <span class="theme-icon">🌙</span>
+                        <span class="theme-label">Dark Mode</span>
+                    </button>
+                    <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Toggle menu">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
+                </div>
+            </div>
         </header>
 
-        <nav class="nav">
+        <!-- NAV -->
+        <nav class="nav" id="mainNav">
             <a href="index.html">Home</a>
-            <a href="login.html">Login</a>
+            <a href="login.html" class="active">Login</a>
             <a href="register.html">Register</a>
             <a href="student.html">Student</a>
             <a href="faculty.html">Faculty</a>
+            <a href="admin.html">Admin</a>
             <a href="courses.html">Courses</a>
             <a href="attendance.html">Attendance</a>
             <a href="assignment.html">Assignment</a>
@@ -29,62 +316,152 @@
         </nav>
 
         <main class="main">
-            
-            <section class="card form-box">
-                <h2>Login Page</h2>
-                <form action="index.html">
-                    <table>
-                        <tr>
-                            <td><label>Username:</label></td>
-                            <td>
-                                <input type="text" name="username" placeholder="Enter Username" required>
-                            </td>
-                        </tr>
+            <div class="login-page-wrap">
 
-                        <tr>
-                            <td><label>Password:</label></td>
-                            <td>
-                                <input type="password" name="password" placeholder="Enter Password" required>
-                            </td>
-                        </tr>
+                <!-- LEFT: Info Panel -->
+                <div class="login-info-panel">
+                    <span class="uni-badge">🏛️ NAAC Accredited · Grade A+</span>
+                    <h2>CHARUSAT University Portal</h2>
+                    <p>Sign in to your role-specific academic dashboard. Access your courses, attendance, assignments, and results.</p>
 
-                        <tr>
-                            <td><label>Login As:</label></td>
-                            <td>
-                                <input type="radio" name="role" value="student" checked> Student
-                                <input type="radio" name="role" value="faculty"> Faculty
-                                <input type="radio" name="role" value="admin"> Admin
-                            </td>
-                        </tr>
+                    <ul class="login-portal-list">
+                        <li onclick="setRoleExternal('student')">
+                            <div class="lpl-icon">🎓</div>
+                            <div class="lpl-text">
+                                <strong>Student Portal</strong>
+                                <span>Courses, Attendance &amp; Results</span>
+                            </div>
+                        </li>
+                        <li onclick="setRoleExternal('faculty')">
+                            <div class="lpl-icon">👨‍🏫</div>
+                            <div class="lpl-text">
+                                <strong>Faculty Portal</strong>
+                                <span>Directory, Classes &amp; Grades</span>
+                            </div>
+                        </li>
+                        <li onclick="setRoleExternal('admin')">
+                            <div class="lpl-icon">👑</div>
+                            <div class="lpl-text">
+                                <strong>Admin Console</strong>
+                                <span>Campus Management &amp; Reports</span>
+                            </div>
+                        </li>
+                    </ul>
 
-                        <tr>
-                            <td></td>
-                            <td>
-                                <input type="checkbox"> Remember Me
-                            </td>
-                        </tr>
+                    <div style="font-size: 0.75rem; color: #475569;">
+                        📍 Changa, Anand, Gujarat · 388421<br>
+                        🌐 charusat.ac.in
+                    </div>
+                </div>
 
-                        <tr>
-                            <td></td>
-                            <td>
-                                <input type="submit" value="Login">
-                                <input type="reset" value="Clear">
-                            </td>
-                        </tr>
-                    </table>
-                </form>
+                <!-- RIGHT: Login Form -->
+                <div class="login-form-panel">
+                    <h2>🔐 Sign In</h2>
+                    <p class="subtitle">Select your role and enter your credentials to continue.</p>
 
-                <p class="note">
-                    Don't have an account?
-                    <a href="register.html">Register Here</a>
-                </p>
-            </section>
+                    <!-- Alert box -->
+                    <div id="loginAlert" class="login-alert" role="alert"></div>
+
+                    <form id="loginForm">
+                        <!-- Role Selection -->
+                        <div class="role-tabs" role="radiogroup">
+                            <div class="role-tab active" data-role="student" tabindex="0">
+                                <span class="role-tab-check">✓</span>
+                                <span class="role-tab-icon">🎓</span>
+                                <span class="role-tab-name">Student</span>
+                                <input type="radio" name="role" value="student" checked>
+                            </div>
+                            <div class="role-tab" data-role="faculty" tabindex="0">
+                                <span class="role-tab-check">✓</span>
+                                <span class="role-tab-icon">👨‍🏫</span>
+                                <span class="role-tab-name">Faculty</span>
+                                <input type="radio" name="role" value="faculty">
+                            </div>
+                            <div class="role-tab" data-role="admin" tabindex="0">
+                                <span class="role-tab-check">✓</span>
+                                <span class="role-tab-icon">👑</span>
+                                <span class="role-tab-name">Admin</span>
+                                <input type="radio" name="role" value="admin">
+                            </div>
+                        </div>
+
+                        <!-- Role indicator -->
+                        <div id="activeRoleIndicator" class="role-indicator">
+                            🎓 Student — Logging in to Student Portal
+                        </div>
+
+                        <!-- Username -->
+                        <div class="form-group">
+                            <label id="usernameLabel" for="username">Enrollment No. / ID</label>
+                            <input type="text" id="username" name="username" placeholder="e.g. 23CE045" required autocomplete="username">
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="pw-wrap">
+                                <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                                <button type="button" class="pw-toggle" id="togglePasswordBtn" title="Show/Hide password">👁️</button>
+                            </div>
+                        </div>
+
+                        <!-- Remember me -->
+                        <div class="form-meta">
+                            <label><input type="checkbox" id="rememberMe"> Keep me signed in</label>
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit" id="submitLoginBtn" class="btn-login">Sign In as Student →</button>
+
+                        <!-- Demo quick-fill -->
+                        <div class="demo-strip">
+                            <div class="demo-strip-label">⚡ Quick Demo Fill</div>
+                            <div class="demo-btns">
+                                <button type="button" class="demo-btn demo-chip-btn" data-demo-role="student">🎓 Student</button>
+                                <button type="button" class="demo-btn demo-chip-btn" data-demo-role="faculty">👨‍🏫 Faculty</button>
+                                <button type="button" class="demo-btn demo-chip-btn" data-demo-role="admin">👑 Admin</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="form-footer-links">
+                        <a href="index.html">← Back to Home</a>
+                        <span>New? <a href="register.html">Register here</a></span>
+                    </div>
+                </div>
+
+            </div>
         </main>
 
         <footer class="footer">
-            <p>&copy; 2026 Student Hub Portal</p>
+            <p>&copy; 2026 CHARUSAT · Charotar University of Science and Technology. All Rights Reserved.</p>
         </footer>
     </div>
+
     <script src="js/script.js"></script>
+    <script src="js/login.js"></script>
+    <script>
+        // Allow left panel to set role
+        function setRoleExternal(role) {
+            document.querySelectorAll('.role-tab').forEach(function(tab) {
+                tab.classList.toggle('active', tab.getAttribute('data-role') === role);
+                const radio = tab.querySelector('input[type="radio"]');
+                if (radio) radio.checked = tab.getAttribute('data-role') === role;
+            });
+            // Trigger login.js role update
+            const event = new Event('change');
+            const radio = document.querySelector('input[name="role"]:checked');
+            if (radio) radio.dispatchEvent(event);
+        }
+        // Also wire role-tab clicks (since login.js uses .role-card-option class, patch for .role-tab)
+        document.querySelectorAll('.role-tab').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.role-tab').forEach(function(t) { t.classList.remove('active'); });
+                tab.classList.add('active');
+                const radio = tab.querySelector('input[type="radio"]');
+                if (radio) { radio.checked = true; radio.dispatchEvent(new Event('change')); }
+            });
+        });
+    </script>
 </body>
 </html>
