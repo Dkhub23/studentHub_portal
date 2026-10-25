@@ -159,15 +159,15 @@ const AuthGuard = (function () {
         if (!nav) return;
         const links = {
             student: [
-                ["Home", "index.html"], ["Student", "student.html"], ["Courses", "courses.html"],
+                ["Home", "index.html"], ["Student", "student.html"], ["Faculty", "faculty.html"], ["Admin", "admin.html"], ["Courses", "courses.html"],
                 ["Attendance", "attendance.html"], ["Assignment", "assignment.html"], ["Notice", "notice.html"],
                 ["Profile", "profile.html"], ["Contact Us", "contact.html"]
             ],
             faculty: [
-                ["Home", "faculty.html"], ["Profile", "profile.html"], ["Courses", "courses.html"],
+                ["Home", "faculty.html"], ["Student", "student.html"], ["Faculty", "faculty.html"], ["Admin", "admin.html"], ["Profile", "profile.html"], ["Courses", "courses.html"],
                 ["Attendance", "attendance.html"], ["Assignment", "assignment.html"], ["Notice", "notice.html"]
             ],
-            admin: [["Home", "index.html"], ["Admin", "admin.html"], ["Notice", "notice.html"], ["All Activity", "admin.html#activitySection"]]
+            admin: [["Home", "index.html"], ["Student", "student.html"], ["Faculty", "faculty.html"], ["Admin", "admin.html"], ["Notice", "notice.html"], ["All Activity", "admin.html#activitySection"]]
         }[role] || [["Home", "index.html"], ["Login", "login.html"], ["Register", "register.html"]];
         const current = window.location.pathname.split("/").pop() || "index.html";
         nav.innerHTML = links.map(function (item) {
@@ -247,7 +247,9 @@ const AuthGuard = (function () {
                 specificTitle = "⛔ Access Denied: Faculty Portal Reserved for Teaching Staff";
                 specificMessage = `You are logged in as a <strong>Student</strong>. The Faculty Portal is strictly restricted to university professors and teaching staff.`;
             } else {
-                specificMessage = `Your current role <strong>${currentRole.toUpperCase()}</strong> does not possess the required clearance to access <strong>${pageTitle}</strong>.`;
+                const targetRole = allowedRoles[0] || "authorized";
+                specificTitle = `403 Forbidden: ${currentRole.charAt(0).toUpperCase() + currentRole.slice(1)} Cannot Access This Page`;
+                specificMessage = `You are logged in as <strong>${currentRole}</strong>. This page is restricted to ${targetRole} accounts.`;
             }
 
             // Determine user's legitimate dashboard URL
@@ -285,6 +287,28 @@ const AuthGuard = (function () {
      * Render the blocking Access Denied modal
      */
     function showAccessDeniedModal(config) {
+        // Static HTML cannot change the HTTP status, but replace the protected
+        // content with a full-page 403 screen so it cannot be used behind an overlay.
+        const safe = function (value) {
+            return String(value).replace(/[&<>"']/g, function (character) {
+                return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character];
+            });
+        };
+        document.title = "403 Access denied | Student Hub";
+        document.body.innerHTML = `
+            <main style="min-height:100vh;display:grid;place-items:center;padding:24px;background:#f4f7fb;color:#17243b;font-family:Arial,sans-serif">
+                <section style="width:min(100%,620px);box-sizing:border-box;background:#fff;padding:clamp(28px,6vw,56px);border-radius:18px;box-shadow:0 12px 40px #14264a18;text-align:center" aria-labelledby="accessDeniedTitle">
+                    <div style="font-size:clamp(72px,15vw,112px);line-height:1;font-weight:800;color:#dc3545">403</div>
+                    <p style="margin:16px 0 8px;color:#b02a37;font-weight:700;letter-spacing:.08em">FORBIDDEN</p>
+                    <h1 id="accessDeniedTitle" style="margin:0 0 16px;font-size:clamp(24px,5vw,32px)">${safe(config.title)}</h1>
+                    <p style="margin:0 0 20px;color:#5b6577;line-height:1.6">${safe(config.message.replace(/<[^>]*>/g, ""))}</p>
+                    <p style="margin:0 0 28px;color:#5b6577">Your role: <strong>${safe(config.currentRole)}</strong> · Required: <strong>${safe(config.allowedRoles.join(" or "))}</strong></p>
+                    <a href="${safe(config.suggestedActionUrl)}" style="display:inline-block;margin:4px;padding:12px 18px;border-radius:8px;background:#0d6efd;color:#fff;text-decoration:none;font-weight:700">${safe(config.suggestedActionText)}</a>
+                    <a href="login.html" style="display:inline-block;margin:4px;padding:12px 18px;border-radius:8px;border:1px solid #ccd3df;color:#25324a;text-decoration:none">Switch account</a>
+                </section>
+            </main>`;
+        return;
+
         // Blur / Lock the underlying page content
         const container = document.querySelector(".container");
         if (container) {
