@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attendance Calculator</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/auth.js"></script>
+    <script>document.addEventListener("DOMContentLoaded", function () { AuthGuard.enforcePageAccess(["student", "faculty"], "Attendance"); });</script>
 </head>
 <body>
     <div class="container">
@@ -29,7 +31,7 @@
         </nav>
 
         <main class="main">
-            <section class="card">
+            <section class="card" id="attendanceStudentPanel">
                 <h2>Overall Attendance : <span id="overall">0%</span></h2>
                 <div class="form-box">
                     <table>
@@ -70,8 +72,13 @@
                         </tr>
                     </table>
                     <br>
-                    <input type="button" id="calculateAttendance" value="Calculate Attendance">
+                    <input type="button" id="calculateAttendance" value="Calculate and Save Attendance">
                 </div>
+            </section>
+            <section class="card" id="facultyAttendancePanel" hidden>
+                <h2>Attendance of All Students</h2>
+                <p class="section-sub">Attendance records submitted by students on this browser.</p>
+                <div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Student</th><th>Enrollment / Login</th><th>Course</th><th>Present</th><th>Total classes</th><th>Attendance</th><th>Updated</th></tr></thead><tbody id="facultyAttendanceRows"></tbody></table></div>
             </section>
         </main>
 
@@ -81,9 +88,56 @@
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const user = AuthGuard.getCurrentUser();
+            const role = AuthGuard.getUserRole();
+            const studentPanel = document.getElementById("attendanceStudentPanel");
+            const facultyPanel = document.getElementById("facultyAttendancePanel");
+            if (role === "faculty") {
+                studentPanel.hidden = true;
+                facultyPanel.hidden = false;
+                const records = JSON.parse(localStorage.getItem("studentHubAttendance") || "[]");
+                const tbody = document.getElementById("facultyAttendanceRows");
+                if (!records.length) {
+                    const row = document.createElement("tr");
+                    const cell = document.createElement("td"); cell.colSpan = 7; cell.textContent = "No student attendance submitted yet.";
+                    row.appendChild(cell); tbody.appendChild(row);
+                }
+                records.slice().reverse().forEach(function (record) {
+                    const courses = record.courses && record.courses.length ? record.courses.filter(c => Number(c.total) > 0) : [record];
+                    courses.forEach(function (course) {
+                        const row = document.createElement("tr");
+                        [record.studentName, record.studentId, course.course || "Semester 3", course.present, course.total, course.percentage + "%", new Date(record.updatedAt).toLocaleString()].forEach(function (value) {
+                            const td = document.createElement("td"); td.textContent = value ?? "—"; row.appendChild(td);
+                        });
+                        tbody.appendChild(row);
+                    });
+                });
+            } else if (role === "student" && user) {
+                const key = (user.username || user.displayName).toLowerCase();
+                const prior = JSON.parse(localStorage.getItem("studentHubAttendance") || "[]").find(r => r.studentKey === key);
+                if (prior) {
+                    if (prior.courses && prior.courses.length) {
+                        prior.courses.forEach(function (course, index) {
+                            if (index > 3) return;
+                            document.getElementById("p" + (index + 1)).value = course.present;
+                            document.getElementById("t" + (index + 1)).value = course.total;
+                            document.getElementById("a" + (index + 1)).textContent = course.percentage + "%";
+                        });
+                    } else {
+                        document.getElementById("p1").value = prior.present;
+                        document.getElementById("t1").value = prior.total;
+                        document.getElementById("a1").textContent = prior.percentage + "%";
+                    }
+                    document.getElementById("overall").textContent = prior.percentage + "%";
+                }
+            }
+        });
         function calculate() {
             let totalPresent = 0;
             let totalClass = 0;
+            const courseNames = ["CEUE203 / OOP", "CEUC201 / FDSA", "HSUV201 / CPI", "ITUC201 / FCN"];
+            const courseRecords = [];
 
             for (let i = 1; i <= 4; i++) {
                 let p = Number(document.getElementById("p" + i).value);
@@ -93,10 +147,12 @@
                     alert("Present classes must be between 0 and Total classes.");
                     return;
                 }
+                courseRecords[i - 1] = {course:courseNames[i - 1],present:p,total:t,percentage:"0.0"};
                 if (t > 0) {
                     if (p <= t) {
                         let per = (p / t) * 100;
                         document.getElementById("a" + i).innerHTML = per.toFixed(1) + "%";
+                        courseRecords[i - 1].percentage = per.toFixed(1);
                         totalPresent += p;
                         totalClass += t;
                     } else {
@@ -109,6 +165,14 @@
             if (totalClass > 0) {
                 let overall = (totalPresent / totalClass) * 100;
                 document.getElementById("overall").innerHTML = overall.toFixed(1) + "%";
+                const user = AuthGuard.getCurrentUser();
+                if (AuthGuard.getUserRole() === "student" && user) {
+                    const key = (user.username || user.displayName).toLowerCase();
+                    const records = JSON.parse(localStorage.getItem("studentHubAttendance") || "[]").filter(r => r.studentKey !== key);
+                    records.push({studentKey:key,studentId:user.username,studentName:user.displayName||user.username,courses:courseRecords,present:totalPresent,total:totalClass,percentage:overall.toFixed(1),updatedAt:new Date().toISOString()});
+                    localStorage.setItem("studentHubAttendance", JSON.stringify(records));
+                    AuthGuard.logActivity("attendance_save", "attendance.html");
+                }
             } else {
                 document.getElementById("overall").innerHTML = "0%";
             }

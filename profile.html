@@ -1,63 +1,148 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Profile</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Profile · Student Hub</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .role-profile{max-width:980px;margin:22px auto}.profile-banner{padding:26px!important}.profile-photo{object-fit:cover}.profile-table{width:100%}.profile-table td,.profile-table th{padding:11px 14px}.profile-table td:first-child{font-weight:700;width:32%}.profile-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.profile-actions a{display:inline-block;padding:9px 14px;border-radius:8px;background:#2563eb;color:#fff;text-decoration:none;font-weight:700}.profile-section{margin-top:18px}.profile-empty{padding:20px;color:#64748b}.profile-history{padding-left:20px}.profile-history li{margin:8px 0}
+    </style>
+    <script src="js/auth.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>🎓 Student Hub Portal</h1>
-            <p>Student Profile</p>
-        </header>
+<div class="container">
+    <header class="header"><h1>🎓 Student Hub Portal</h1><p id="pageSubtitle">Personal dashboard</p></header>
+    <nav class="nav" id="profileNav">
+        <a href="index.html">Home</a>
+        <a href="profile.html" class="active">My Profile</a>
+        <a href="student.html" data-roles="student">Student dashboard</a>
+        <a href="faculty.html" data-roles="faculty">Faculty dashboard</a>
+        <a href="admin.html" data-roles="admin">Admin dashboard</a>
+        <a href="courses.html" data-roles="student,faculty,admin">Courses</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <main class="main role-profile" id="profileContent"></main>
+    <footer class="footer"><p>&copy; 2026 Student Hub Portal · <a href="javascript:AuthGuard.logout()">Sign out</a></p></footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (!AuthGuard.enforcePageAccess(['student', 'faculty', 'admin'], 'Personal Profile Dashboard')) return;
 
-        <nav class="nav">
-            <a href="index.html">Home</a>
-            <a href="login.html">Login</a>
-            <a href="register.html">Register</a>
-            <a href="student.html">Student</a>
-            <a href="faculty.html">Faculty</a>
-            <a href="courses.html">Courses</a>
-            <a href="attendance.html">Attendance</a>
-            <a href="assignment.html">Assignment</a>
-            <a href="notice.html">Notice</a>
-            <a href="profile.html">Profile</a>
-         
-            <a href="contact.html">Contact Us</a>
-        </nav>
+    const user = AuthGuard.getCurrentUser();
+    const role = AuthGuard.getUserRole();
+    const content = document.getElementById('profileContent');
+    const title = document.getElementById('pageSubtitle');
+    document.querySelectorAll('[data-roles]').forEach(function (link) {
+        link.hidden = !link.dataset.roles.split(',').includes(role);
+    });
 
-        <main class="main">
-            <section class="card profile-card">
-                <div class="profile-banner">
-                    <img src="student.jpg" alt="Student Photo" class="profile-photo">
-                    <h2 class="profile-name">Dhruvi Kakadia</h2>
-                    <p class="profile-role">B.Tech Computer Science &amp; Engineering &bull; Semester 3</p>
-                </div>
+    function cell(label, value) {
+        const tr = document.createElement('tr');
+        const th = document.createElement('td');
+        const td = document.createElement('td');
+        th.textContent = label;
+        td.textContent = value || 'Not provided';
+        tr.append(th, td);
+        return tr;
+    }
+    function table(rows) {
+        const t = document.createElement('table');
+        t.className = 'profile-table';
+        rows.forEach(row => t.appendChild(cell(row[0], row[1])));
+        return t;
+    }
+    function section(heading, body) {
+        const card = document.createElement('section');
+        card.className = 'card profile-section';
+        const h = document.createElement('h2');
+        h.textContent = heading;
+        card.append(h, body);
+        content.appendChild(card);
+    }
+    function profileCard(name, roleLabel, image, rows) {
+        const card = document.createElement('section');
+        card.className = 'card profile-card';
+        const banner = document.createElement('div');
+        banner.className = 'profile-banner';
+        const photo = document.createElement('img');
+        photo.className = 'profile-photo';
+        photo.src = image;
+        photo.alt = name + ' profile photo';
+        const h = document.createElement('h2');
+        h.className = 'profile-name';
+        h.textContent = name;
+        const p = document.createElement('p');
+        p.className = 'profile-role';
+        p.textContent = roleLabel;
+        banner.append(photo, h, p);
+        card.append(banner, table(rows));
+        content.appendChild(card);
+    }
+    function actions(items) {
+        const row = document.createElement('div');
+        row.className = 'profile-actions';
+        items.forEach(function (item) {
+            const a = document.createElement('a');
+            a.href = item[1];
+            a.textContent = item[0];
+            row.appendChild(a);
+        });
+        content.appendChild(row);
+    }
 
-                <table class="profile-table">
-                    <tr>
-                        <th>Field</th>
-                        <th>Information</th>
-                    </tr>
-                    <tr><td>Student Name</td><td>Dhruvi Kakadia</td></tr>
-                    <tr><td>Enrollment No.</td><td>25CS025</td></tr>
-                    <tr><td>Course</td><td>B.Tech Computer Science &amp; Engineering</td></tr>
-                    <tr><td>Semester</td><td>3</td></tr>
-                    <tr><td>Email</td><td>dhruvi@example.com</td></tr>
-                    <tr><td>Mobile</td><td>+91 9876543210</td></tr>
-                    <tr><td>Date of Birth</td><td>01-01-2006</td></tr>
-                    <tr><td>Gender</td><td>Female</td></tr>
-                    <tr><td>Address</td><td>Gujarat, India</td></tr>
-                </table>
-            </section>
-        </main>
-
-        <footer class="footer">
-            <p>&copy; 2026 Student Hub Portal | Student Profile</p>
-        </footer>
-    </div>
-    <script src="js/script.js"></script>
+    if (role === 'student') {
+        title.textContent = 'Student Profile Dashboard';
+        const students = JSON.parse(localStorage.getItem('studentHubRegisteredStudents') || '[]');
+        const identifier = (user.username || '').toLowerCase();
+        const student = students.find(s => [s.enrollment, s.email, s.name].some(v => (v || '').toLowerCase() === identifier))
+            || students.find(s => (s.name || '').toLowerCase() === (user.displayName || '').toLowerCase());
+        const name = (student && student.name) || user.displayName || user.username;
+        const course = (student && student.course) || 'Not provided';
+        profileCard(name, course + ' · Student', 'student.jpg', [
+            ['Student name', name], ['Enrollment number', student && student.enrollment],
+            ['Email', student && student.email], ['Course', course], ['Mobile', student && student.mobile],
+            ['Gender', student && student.gender], ['Registration date', student && student.registeredAt],
+            ['Account status', student && student.status], ['Signed-in account', user.username]
+        ]);
+        if (student && Array.isArray(student.history) && student.history.length) {
+            const list = document.createElement('ul');
+            list.className = 'profile-history';
+            student.history.forEach(function (item) {
+                const li = document.createElement('li');
+                li.textContent = [item.timestamp, item.event, item.detail].filter(Boolean).join(' · ');
+                list.appendChild(li);
+            });
+            section('My registration and activity history', list);
+        }
+        actions([['Open student dashboard', 'student.html'], ['Courses', 'courses.html'], ['Attendance', 'attendance.html']]);
+    } else if (role === 'faculty') {
+        title.textContent = 'Faculty Profile Dashboard';
+        profileCard('Amit Thakkar', 'Faculty · Data Structure and Algorithms', 'images/amitsir.jpg', [
+            ['Faculty name', 'Amit Thakkar'], ['Role', 'Faculty'],
+            ['Department / subject', 'Data Structure and Algorithms'],
+            ['Email', 'amitthakkar.it@charusat.ac.in'], ['Signed-in account', user.username]
+        ]);
+        actions([['Open faculty dashboard', 'faculty.html'], ['Courses', 'courses.html']]);
+    } else {
+        title.textContent = 'Administrator Profile Dashboard';
+        profileCard(user.displayName || user.username, 'Administrator · Full management access', 'student.jpg', [
+            ['Administrator name', user.displayName || user.username], ['Role', 'Administrator'],
+            ['Account ID', user.username], ['Signed in at', user.loginTime]
+        ]);
+        const result = AuthGuard.getAdminStudentRegistry();
+        const list = document.createElement('div');
+        if (!result.authorized) {
+            list.textContent = result.error;
+        } else {
+            const rows = result.data.map(s => [s.enrollment, s.name, s.email, s.course, s.status].join(' · '));
+            list.textContent = rows.length ? rows.join('\n') : 'No student records yet.';
+            list.style.whiteSpace = 'pre-line';
+        }
+        section('All student records (' + (result.data || []).length + ')', list);
+        actions([['Open admin dashboard', 'admin.html'], ['Faculty directory', 'faculty.html']]);
+    }
+});
+</script>
 </body>
 </html>

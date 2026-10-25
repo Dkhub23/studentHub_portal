@@ -1,46 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notice Page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Notices · Student Hub</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/auth.js"></script>
+    <script>document.addEventListener("DOMContentLoaded", function () { AuthGuard.enforcePageAccess(["student", "faculty", "admin"], "Notices"); });</script>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>🎓 Student Hub Portal</h1>
-            <p>Notice Page</p>
-        </header>
-
-        <nav class="nav">
-            <a href="index.html">Home</a>
-            <a href="login.html">Login</a>
-            <a href="register.html">Register</a>
-            <a href="student.html">Student</a>
-            <a href="faculty.html">Faculty</a>
-            <a href="courses.html">Courses</a>
-            <a href="attendance.html">Attendance</a>
-            <a href="assignment.html">Assignment</a>
-            <a href="notice.html">Notice</a>
-            <a href="profile.html">Profile</a>
-         
-            <a href="contact.html">Contact Us</a>
-        </nav>
-
-        <main class="main">
-            <section class="card">
-                <h2>📢 Mid Semester Examination</h2>
-                <p><b>Date:</b> 25 July 2026</p>
-                <p>All CSE Semester-3 students are informed that the Mid Semester Examination will commence from <b>1 August 2026</b>.</p>
-                <p><b>Posted By:</b> Examination Department</p>
-            </section>
-        </main>
-
-        <footer class="footer">
-            <p>&copy; 2026 Student Hub Portal</p>
-        </footer>
-    </div>
-    <script src="js/script.js"></script>
+<div class="container">
+    <header class="header">
+        <h1>🎓 Student Hub Portal</h1>
+        <p>Notice Dashboard</p>
+    </header>
+    <nav class="nav">
+        <a href="index.html">Home</a><a href="login.html">Login</a><a href="register.html">Register</a>
+        <a href="student.html">Student</a><a href="faculty.html">Faculty</a><a href="admin.html">Admin</a>
+        <a href="courses.html">Courses</a><a href="attendance.html">Attendance</a>
+        <a href="assignment.html">Assignment</a><a href="notice.html">Notice</a>
+        <a href="profile.html">Profile</a><a href="contact.html">Contact Us</a>
+    </nav>
+    <main class="main">
+        <section class="card" id="noticeEditor" hidden>
+            <h2 id="noticeEditorTitle">Add a notice</h2>
+            <form id="noticeForm">
+                <label for="noticeTitle">Notice title</label>
+                <input id="noticeTitle" name="title" type="text" maxlength="160" required>
+                <label for="noticeBody">Notice details</label>
+                <textarea id="noticeBody" name="body" rows="5" maxlength="3000" required></textarea>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+                    <button type="submit" id="noticeSubmit">Publish notice</button>
+                    <button type="button" id="noticeCancelEdit" class="btn-secondary" hidden>Cancel edit</button>
+                </div>
+                <p id="noticeFormStatus" aria-live="polite"></p>
+            </form>
+        </section>
+        <section class="card">
+            <h2>📢 Notices</h2>
+            <p id="noticePageDescription">Notices published by faculty and administration.</p>
+            <div id="noticeList" aria-live="polite"><p>Loading notices…</p></div>
+        </section>
+    </main>
+    <footer class="footer"><p>&copy; 2026 Student Hub Portal</p></footer>
+</div>
+<script src="js/script.js"></script>
+<script src="js/notices.js"></script>
 </body>
 </html>

@@ -237,6 +237,24 @@
             display: flex;
             justify-content: flex-end;
         }
+        #editStudentOverlay .history-modal { max-width: 700px; max-height: 92vh; }
+        .edit-student-intro { margin: 0 0 18px; color: var(--muted); font-size: .84rem; }
+        .edit-student-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; }
+        .edit-student-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+        .edit-student-field label { color: var(--ink-light); font-size: .76rem; font-weight: 800; }
+        .edit-student-field input, .edit-student-field select {
+            width: 100%; box-sizing: border-box; min-height: 42px; padding: 9px 11px;
+            border: 1px solid var(--line); border-radius: var(--radius-md);
+            background: var(--paper); color: var(--ink); font: inherit; font-size: .86rem;
+        }
+        .edit-student-field input:focus, .edit-student-field select:focus {
+            outline: 3px solid rgba(37,99,235,.16); border-color: var(--primary);
+        }
+        .edit-student-error { grid-column: 1 / -1; margin: 0; color: var(--danger); font-size: .82rem; font-weight: 700; }
+        .student-actions-cell { display: flex; justify-content: center; gap: 7px; flex-wrap: wrap; }
+        .btn-delete-student { border: 1px solid #fecaca; background: #fff1f2; color: #be123c; padding: 4px 9px; border-radius: var(--radius-sm); font-size: .73rem; font-weight: 800; cursor: pointer; }
+        .btn-delete-student:hover { background: #be123c; border-color: #be123c; color: #fff; }
+        [data-theme="dark"] .btn-delete-student { background: rgba(190,18,60,.16); border-color: rgba(251,113,133,.3); color: #fda4af; }
 
         @media (max-width: 800px) {
             .metrics-row { grid-template-columns: repeat(2, 1fr); }
@@ -244,6 +262,9 @@
         }
         @media (max-width: 500px) {
             .metrics-row { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 600px) {
+            .edit-student-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -393,11 +414,29 @@
                                 <th>Registered</th>
                                 <th>Status</th>
                                 <th style="text-align:center;">History</th>
+                                <th style="text-align:center;">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="studentsTableBody">
-                            <tr><td colspan="7" style="text-align:center; padding:20px; color:var(--muted);">Loading registry…</td></tr>
+                            <tr><td colspan="8" style="text-align:center; padding:20px; color:var(--muted);">Loading registry…</td></tr>
                         </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="card" id="activitySection">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+                    <div>
+                        <span class="priority-badge">Admin Activity Monitor</span>
+                        <h2 style="margin:6px 0 4px;">Student &amp; Faculty Activity</h2>
+                        <p style="margin:0 0 14px;font-size:0.82rem;color:var(--muted);">Sign-ins, sign-outs, and visited pages recorded on this browser.</p>
+                    </div>
+                    <button type="button" id="clearActivityBtn" class="btn-secondary">Clear Activity History</button>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table style="width:100%;">
+                        <thead><tr><th>User</th><th>Role</th><th>Activity</th><th>Page</th><th>Time</th></tr></thead>
+                        <tbody id="activityTableBody"><tr><td colspan="5" style="text-align:center;padding:18px;color:var(--muted);">Loading activity…</td></tr></tbody>
                     </table>
                 </div>
             </section>
@@ -427,6 +466,33 @@
         </div>
     </div>
 
+    <div id="editStudentOverlay" class="history-overlay" role="dialog" aria-modal="true" aria-labelledby="editStudentTitle">
+        <form id="editStudentForm" class="history-modal">
+            <div class="history-modal-head">
+                <div><h3 id="editStudentTitle">Edit Student Details</h3><small class="muted">Update the student's registry profile</small></div>
+                <button type="button" id="closeEditStudentBtn" class="modal-close-btn" aria-label="Close">&times;</button>
+            </div>
+            <div class="history-modal-body">
+                <p class="edit-student-intro">Update the student's profile information. Duplicate enrollment numbers, email addresses, and phone numbers are rejected.</p>
+                <div class="edit-student-grid">
+                    <div class="edit-student-field"><label for="editStudentName">Full name</label><input id="editStudentName" maxlength="120" autocomplete="name" required></div>
+                    <div class="edit-student-field"><label for="editStudentEnrollment">Enrollment number</label><input id="editStudentEnrollment" maxlength="40" autocomplete="off" required></div>
+                    <div class="edit-student-field"><label for="editStudentEmail">Email address</label><input id="editStudentEmail" type="email" maxlength="190" autocomplete="email" required></div>
+                    <div class="edit-student-field"><label for="editStudentMobile">Phone number</label><input id="editStudentMobile" type="tel" maxlength="15" autocomplete="tel"></div>
+                    <div class="edit-student-field"><label for="editStudentCourse">Course</label><input id="editStudentCourse" maxlength="120" required></div>
+                    <div class="edit-student-field"><label for="editStudentGender">Gender</label><input id="editStudentGender"></div>
+                    <div class="edit-student-field"><label for="editStudentDob">Date of birth</label><input id="editStudentDob" type="date"></div>
+                    <div class="edit-student-field"><label for="editStudentStatus">Status</label><select id="editStudentStatus"><option>Verified</option><option>Active</option><option>Pending</option></select></div>
+                    <p id="editStudentError" class="edit-student-error" role="alert"></p>
+                </div>
+            </div>
+            <div class="history-modal-foot" style="gap:8px">
+                <button type="button" id="cancelEditStudentBtn" class="btn-secondary">Cancel</button>
+                <button type="submit" class="btn-primary">Save changes</button>
+            </div>
+        </form>
+    </div>
+
     <script src="js/script.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -438,6 +504,40 @@
             // ── Logout
             document.getElementById("adminLogoutBtn").addEventListener("click", function () {
                 AuthGuard.logout();
+            });
+
+            const activityBody = document.getElementById("activityTableBody");
+            function renderActivity() {
+                const logs = AuthGuard.getActivityLogs();
+                activityBody.replaceChildren();
+                if (!logs.length) {
+                    const row = document.createElement("tr");
+                    const cell = document.createElement("td");
+                    cell.colSpan = 5;
+                    cell.textContent = "No activity recorded yet.";
+                    cell.style.textAlign = "center";
+                    cell.style.padding = "18px";
+                    row.appendChild(cell);
+                    activityBody.appendChild(row);
+                    return;
+                }
+                logs.forEach(function (item) {
+                    const row = document.createElement("tr");
+                    [item.displayName || item.username, item.role, item.action, item.page,
+                        new Date(item.timestamp).toLocaleString()].forEach(function (value) {
+                        const cell = document.createElement("td");
+                        cell.textContent = value || "—";
+                        row.appendChild(cell);
+                    });
+                    activityBody.appendChild(row);
+                });
+            }
+            renderActivity();
+            document.getElementById("clearActivityBtn").addEventListener("click", function () {
+                if (!window.confirm("Clear the activity history for this browser? A clear-history audit entry will be retained.")) return;
+                const result = AuthGuard.clearActivityHistory();
+                if (!result.authorized) { window.alert(result.error); return; }
+                renderActivity();
             });
 
             // ── Load registry
@@ -455,7 +555,7 @@
                 if (statEl) statEl.textContent = list.length;
 
                 if (!list.length) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--muted);">No students found.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--muted);">No students found.</td></tr>';
                     return;
                 }
 
@@ -473,12 +573,47 @@
                     '</tr>';
                 }).join("");
 
-                // Re-bind history buttons
-                tbody.querySelectorAll(".btn-history").forEach(function (btn) {
+                tbody.querySelectorAll("tr").forEach(function (row, index) {
+                    const cell = document.createElement("td");
+                    cell.className = "student-actions-cell";
+                    const editButton = document.createElement("button");
+                    editButton.type = "button";
+                    editButton.className = "btn-history btn-edit-student";
+                    editButton.dataset.enrollment = list[index].enrollment;
+                    editButton.textContent = "Edit";
+                    const deleteButton = document.createElement("button");
+                    deleteButton.type = "button";
+                    deleteButton.className = "btn-delete-student";
+                    deleteButton.dataset.enrollment = list[index].enrollment;
+                    deleteButton.textContent = "Delete";
+                    cell.append(editButton, deleteButton);
+                    row.appendChild(cell);
+                });
+
+                // Bind the registry's history, edit, and delete controls.
+                tbody.querySelectorAll(".btn-history, .btn-delete-student").forEach(function (btn) {
                     btn.addEventListener("click", function () {
-                        openHistory(this.getAttribute("data-enrollment"));
+                        const enrollment = this.getAttribute("data-enrollment");
+                        if (this.classList.contains("btn-edit-student")) openStudentEditor(enrollment);
+                        else if (this.classList.contains("btn-delete-student")) deleteStudent(enrollment);
+                        else openHistory(enrollment);
                     });
                 });
+            }
+
+            function deleteStudent(enrollment) {
+                const student = allStudents.find(function (item) { return item.enrollment === enrollment; });
+                if (!student) return;
+                const confirmed = window.confirm("Delete " + student.name + " (" + student.enrollment + ")? This also removes their saved assignments, attendance, and activity history.");
+                if (!confirmed) return;
+                const result = AuthGuard.deleteStudentRecord(enrollment);
+                if (!result.authorized || result.error) {
+                    window.alert(result.error || "Unable to delete this student.");
+                    return;
+                }
+                allStudents = AuthGuard.getAdminStudentRegistry().data || [];
+                filterAndRender();
+                renderActivity();
             }
 
             function filterAndRender() {
@@ -491,6 +626,63 @@
                 });
                 renderTable(filtered);
             }
+
+            const editOverlay = document.getElementById("editStudentOverlay");
+            const editForm = document.getElementById("editStudentForm");
+            const editError = document.getElementById("editStudentError");
+            function openStudentEditor(enrollment) {
+                const student = allStudents.find(function (item) { return item.enrollment === enrollment; });
+                if (!student) return;
+                editForm.dataset.originalEnrollment = student.enrollment;
+                document.getElementById("editStudentName").value = student.name || "";
+                document.getElementById("editStudentEnrollment").value = student.enrollment || "";
+                document.getElementById("editStudentEmail").value = student.email || "";
+                document.getElementById("editStudentMobile").value = student.mobile || "";
+                document.getElementById("editStudentCourse").value = student.course || "";
+                document.getElementById("editStudentGender").value = student.gender || "";
+                document.getElementById("editStudentDob").value = student.dob || "";
+                document.getElementById("editStudentStatus").value = student.status || "Active";
+                editError.textContent = "";
+                editOverlay.classList.add("open");
+                document.body.style.overflow = "hidden";
+                document.getElementById("editStudentName").focus();
+            }
+            function closeStudentEditor() {
+                editOverlay.classList.remove("open");
+                document.body.style.overflow = "";
+                editForm.reset();
+                delete editForm.dataset.originalEnrollment;
+            }
+            ["closeEditStudentBtn", "cancelEditStudentBtn"].forEach(function (id) {
+                document.getElementById(id).addEventListener("click", closeStudentEditor);
+            });
+            editOverlay.addEventListener("click", function (event) {
+                if (event.target === editOverlay) closeStudentEditor();
+            });
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape" && editOverlay.classList.contains("open")) closeStudentEditor();
+            });
+            editForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+                const originalEnrollment = editForm.dataset.originalEnrollment;
+                const result = AuthGuard.updateStudentRecord(originalEnrollment, {
+                    name: document.getElementById("editStudentName").value,
+                    enrollment: document.getElementById("editStudentEnrollment").value,
+                    email: document.getElementById("editStudentEmail").value,
+                    mobile: document.getElementById("editStudentMobile").value,
+                    course: document.getElementById("editStudentCourse").value,
+                    gender: document.getElementById("editStudentGender").value,
+                    dob: document.getElementById("editStudentDob").value,
+                    status: document.getElementById("editStudentStatus").value
+                });
+                if (!result.authorized || result.error) {
+                    editError.textContent = result.error || "Unable to update this record.";
+                    return;
+                }
+                allStudents = AuthGuard.getAdminStudentRegistry().data || [];
+                closeStudentEditor();
+                filterAndRender();
+            });
 
             renderTable(allStudents);
             if (searchEl) searchEl.addEventListener("input", filterAndRender);

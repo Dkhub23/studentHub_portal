@@ -8,6 +8,7 @@ const AuthGuard = (function () {
     const STORAGE_KEY_USER = "studentHubActiveUser";
     const STORAGE_KEY_ROLE = "userRole";
     const STORAGE_KEY_STUDENTS = "studentHubRegisteredStudents";
+    const STORAGE_KEY_ACTIVITY = "studentHubActivityLogs";
 
     // Initial Master Student Registry (Available with Priority clearance to Admin)
     const DEFAULT_STUDENTS_REGISTRY = [
@@ -117,10 +118,76 @@ const AuthGuard = (function () {
         return fallbackRole ? fallbackRole.toLowerCase() : null;
     }
 
+    function getActivityLogs() {
+        try {
+            const logs = JSON.parse(localStorage.getItem(STORAGE_KEY_ACTIVITY) || "[]");
+            return Array.isArray(logs) ? logs : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function logActivity(action, page) {
+        const user = getCurrentUser();
+        if (!user || !user.role) return;
+        const logs = getActivityLogs();
+        logs.unshift({
+            id: Date.now() + Math.random(),
+            username: user.username || user.displayName || "Unknown",
+            displayName: user.displayName || user.username || "Unknown",
+            role: user.role.toLowerCase(),
+            action: action,
+            page: page || window.location.pathname.split("/").pop() || "index.html",
+            timestamp: new Date().toISOString()
+        });
+        localStorage.setItem(STORAGE_KEY_ACTIVITY, JSON.stringify(logs.slice(0, 500)));
+    }
+
+    function clearActivityHistory() {
+        if (getUserRole() !== "admin") {
+            return { authorized: false, error: "Only administrators can clear activity history." };
+        }
+        localStorage.removeItem(STORAGE_KEY_ACTIVITY);
+        logActivity("activity_history_cleared", "admin.html#activitySection");
+        return { authorized: true };
+    }
+
+    function renderRoleNavigation() {
+        const nav = document.querySelector(".nav");
+        const currentUser = getCurrentUser();
+        const role = currentUser && currentUser.role ? currentUser.role.toLowerCase() : null;
+        if (!nav) return;
+        const links = {
+            student: [
+                ["Home", "index.html"], ["Student", "student.html"], ["Courses", "courses.html"],
+                ["Attendance", "attendance.html"], ["Assignment", "assignment.html"], ["Notice", "notice.html"],
+                ["Profile", "profile.html"], ["Contact Us", "contact.html"]
+            ],
+            faculty: [
+                ["Home", "faculty.html"], ["Profile", "profile.html"], ["Courses", "courses.html"],
+                ["Attendance", "attendance.html"], ["Assignment", "assignment.html"], ["Notice", "notice.html"]
+            ],
+            admin: [["Home", "index.html"], ["Admin", "admin.html"], ["Notice", "notice.html"], ["All Activity", "admin.html#activitySection"]]
+        }[role] || [["Home", "index.html"], ["Login", "login.html"], ["Register", "register.html"]];
+        const current = window.location.pathname.split("/").pop() || "index.html";
+        nav.innerHTML = links.map(function (item) {
+            const active = item[1].split("#")[0] === current ? ' class="active"' : "";
+            return '<a href="' + item[1] + '"' + active + '>' + item[0] + '</a>';
+        }).join("");
+        if (role) {
+            nav.insertAdjacentHTML("beforeend", '<a href="#" data-role-logout>Logout</a>');
+            nav.querySelector("[data-role-logout]").addEventListener("click", function (event) {
+                event.preventDefault();
+                logout();
+            });
+        }
+    }
+
     /**
      * Clear active session and log out
      */
     function logout() {
+        logActivity("logout", window.location.pathname.split("/").pop());
         localStorage.removeItem(STORAGE_KEY_USER);
         localStorage.removeItem(STORAGE_KEY_ROLE);
         window.location.href = "login.html";
@@ -405,6 +472,9 @@ const AuthGuard = (function () {
             list = [];
         }
 
+        const duplicates = findStudentDuplicates(list, studentData, null);
+        if (duplicates.email || duplicates.mobile || duplicates.enrollment) return null;
+
         const now = new Date().toLocaleString("en-US", {
             day: "2-digit",
             month: "short",
@@ -446,7 +516,89 @@ const AuthGuard = (function () {
         // Add to top of list
         list.unshift(newStudent);
         localStorage.setItem(STORAGE_KEY_STUDENTS, JSON.stringify(list));
+        logActivity("student_registered", "register.html");
         return newStudent;
+    }
+
+    function findStudentDuplicates(list, data, ignoreId) {
+        const email = (data.email || "").trim().toLowerCase();
+        const enrollment = (data.enrollment || "").trim().toLowerCase();
+        const mobile = (data.mobile || "").replace(/\D/g, "");
+        return list.reduce(function (result, record) {
+            if (ignoreId !== null && String(record.id) === String(ignoreId)) return result;
+            if (email && (record.email || "").trim().toLowerCase() === email) result.email = true;
+            if (enrollment && (record.enrollment || "").trim().toLowerCase() === enrollment) result.enrollment = true;
+            const existingMobile = (record.mobile || "").replace(/\D/g, "");
+            if (mobile && existingMobile && mobile === existingMobile) result.mobile = true;
+            return result;
+        }, { email: false, mobile: false, enrollment: false });
+    }
+
+    function checkStudentDuplicates(data) {
+        initStudentsRegistry();
+        let list = [];
+        try { list = JSON.parse(localStorage.getItem(STORAGE_KEY_STUDENTS) || "[]"); } catch (e) {}
+        return findStudentDuplicates(list, data, null);
+    }
+
+    function updateStudentRecord(enrollment, updates) {
+        if (getUserRole() !== "admin") {
+            return { authorized: false, error: "Only administrators can edit student records." };
+        }
+        initStudentsRegistry();
+        let list = [];
+        try { list = JSON.parse(localStorage.getItem(STORAGE_KEY_STUDENTS) || "[]"); } catch (e) {}
+        const student = list.find(record => (record.enrollment || "").toLowerCase() === String(enrollment).toLowerCase());
+        if (!student) return { authorized: true, error: "Student record was not found." };
+
+        const duplicates = findStudentDuplicates(list, updates, student.id);
+        if (duplicates.email || duplicates.mobile || duplicates.enrollment) {
+            return { authorized: true, duplicates: duplicates, error: "Email, phone number, or enrollment number is already assigned to another student." };
+        }
+        ["name", "enrollment", "email", "course", "gender", "mobile", "dob", "status"].forEach(function (key) {
+            if (Object.prototype.hasOwnProperty.call(updates, key)) student[key] = String(updates[key]).trim();
+        });
+        const now = new Date().toLocaleString();
+        student.history = Array.isArray(student.history) ? student.history : [];
+        student.history.unshift({ timestamp: now, event: "Student Record Updated", detail: "Student details updated by administrator." });
+        student.updatedAt = now;
+        localStorage.setItem(STORAGE_KEY_STUDENTS, JSON.stringify(list));
+        logActivity("student_record_updated", "admin.html");
+        return { authorized: true, error: null, student: student };
+    }
+
+    function deleteStudentRecord(enrollment) {
+        if (getUserRole() !== "admin") {
+            return { authorized: false, error: "Only administrators can delete student records." };
+        }
+        initStudentsRegistry();
+        let list = [];
+        try { list = JSON.parse(localStorage.getItem(STORAGE_KEY_STUDENTS) || "[]"); } catch (e) {}
+        const student = list.find(record => (record.enrollment || "").toLowerCase() === String(enrollment).toLowerCase());
+        if (!student) return { authorized: true, error: "Student record was not found." };
+
+        const identifiers = [student.enrollment, student.email, student.name]
+            .filter(Boolean).map(value => String(value).trim().toLowerCase());
+        const belongsToStudent = item => [item.studentKey, item.studentId, item.studentName, item.username, item.displayName]
+            .some(value => value && identifiers.includes(String(value).trim().toLowerCase()));
+
+        localStorage.setItem(STORAGE_KEY_STUDENTS, JSON.stringify(list.filter(record => record !== student)));
+        ["studentHubSubmissions", "studentHubAttendance"].forEach(function (key) {
+            try {
+                const records = JSON.parse(localStorage.getItem(key) || "[]");
+                localStorage.setItem(key, JSON.stringify(records.filter(record => !belongsToStudent(record))));
+            } catch (e) {}
+        });
+        localStorage.setItem(STORAGE_KEY_ACTIVITY, JSON.stringify(getActivityLogs().filter(item => !belongsToStudent(item))));
+        try {
+            const latestRegistration = JSON.parse(localStorage.getItem("studentHubUser") || "null");
+            if (latestRegistration && [latestRegistration.enrollment, latestRegistration.email, latestRegistration.name]
+                .some(value => value && identifiers.includes(String(value).trim().toLowerCase()))) {
+                localStorage.removeItem("studentHubUser");
+            }
+        } catch (e) {}
+        logActivity("student_record_deleted", "admin.html");
+        return { authorized: true, error: null, student: student };
     }
 
     // Auto-mount header auth status pill on any page if user is logged in
@@ -454,8 +606,10 @@ const AuthGuard = (function () {
         initStudentsRegistry();
         const user = getCurrentUser();
         if (user && user.role) {
+            logActivity("page_view", window.location.pathname.split("/").pop());
             renderHeaderAuthStatus(user);
         }
+        renderRoleNavigation();
     });
 
     // Public API
@@ -466,7 +620,14 @@ const AuthGuard = (function () {
         logout: logout,
         getAdminStudentRegistry: getAdminStudentRegistry,
         getStudentAuditHistory: getStudentAuditHistory,
-        recordNewStudentRegistration: recordNewStudentRegistration
+        recordNewStudentRegistration: recordNewStudentRegistration,
+        checkStudentDuplicates: checkStudentDuplicates,
+        updateStudentRecord: updateStudentRecord,
+        deleteStudentRecord: deleteStudentRecord,
+        logActivity: logActivity,
+        getActivityLogs: getActivityLogs,
+        clearActivityHistory: clearActivityHistory,
+        renderRoleNavigation: renderRoleNavigation
     };
 })();
 

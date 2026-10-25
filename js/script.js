@@ -318,7 +318,40 @@ document.addEventListener("DOMContentLoaded", function () {
     if (assignmentButton) {
         const assignmentStatus = document.getElementById("assignmentStatus");
         const assignmentRows = Array.from(document.querySelectorAll(".assignment-row"));
-        const savedAssignments = JSON.parse(localStorage.getItem("studentHubAssignments") || "[]");
+        const role = window.AuthGuard ? AuthGuard.getUserRole() : null;
+        const user = window.AuthGuard ? AuthGuard.getCurrentUser() : null;
+        const studentKey = user ? (user.username || user.displayName).toLowerCase() : "guest";
+        const facultyPanel = document.getElementById("facultyAssignmentPanel");
+        const studentPanel = assignmentButton.closest(".card");
+        let allSubmissions = [];
+        try { allSubmissions = JSON.parse(localStorage.getItem("studentHubSubmissions") || "[]"); } catch (e) {}
+
+        if (role === "faculty") {
+            studentPanel.hidden = true;
+            facultyPanel.hidden = false;
+            const tbody = document.getElementById("facultyAssignmentRows");
+            const submissions = allSubmissions.slice().reverse();
+            if (!submissions.length) {
+                const row = document.createElement("tr"); const cell = document.createElement("td");
+                cell.colSpan = 6; cell.textContent = "No student assignments have been saved yet.";
+                row.appendChild(cell); tbody.appendChild(row);
+            }
+            submissions.forEach(function (item) {
+                const row = document.createElement("tr");
+                [item.studentName, item.studentId, item.subject, item.status === "submit" ? "Submitted" : "Pending", item.deadline || "—", new Date(item.updatedAt).toLocaleString()].forEach(function (value) {
+                    const td = document.createElement("td"); td.textContent = value || "—"; row.appendChild(td);
+                });
+                tbody.appendChild(row);
+            });
+        }
+
+        let savedAssignments = allSubmissions.filter(function (item) { return item.studentKey === studentKey; });
+        if (!savedAssignments.length && role === "student") {
+            try {
+                const legacy = JSON.parse(localStorage.getItem("studentHubAssignments") || "[]");
+                savedAssignments = legacy.map(function (item) { return Object.assign({}, item, { studentKey: studentKey }); });
+            } catch (e) {}
+        }
         savedAssignments.forEach(function (item, index) {
             if (!assignmentRows[index]) return;
             const textInput = assignmentRows[index].querySelector("input[type='text']");
@@ -329,14 +362,23 @@ document.addEventListener("DOMContentLoaded", function () {
             if (dateInput && item.deadline) dateInput.value = item.deadline;
         });
         assignmentButton.addEventListener("click", function () {
+            if (role !== "student" || !user) return;
             const assignments = assignmentRows.map(function (row) {
                 return {
+                    studentKey: studentKey,
+                    studentId: user.username || "",
+                    studentName: user.displayName || user.username || "Student",
                     subject: (row.querySelector("input[type='text']")?.value || "").trim(),
                     status: row.querySelector("select")?.value || "pending",
-                    deadline: row.querySelector("input[type='date']")?.value || ""
+                    deadline: row.querySelector("input[type='date']")?.value || "",
+                    updatedAt: new Date().toISOString()
                 };
-            });
-            localStorage.setItem("studentHubAssignments", JSON.stringify(assignments));
+            }).filter(function (item) { return item.subject; });
+            const otherSubmissions = allSubmissions.filter(function (item) { return item.studentKey !== studentKey; });
+            allSubmissions = otherSubmissions.concat(assignments);
+            localStorage.setItem("studentHubSubmissions", JSON.stringify(allSubmissions));
+            localStorage.removeItem("studentHubAssignments");
+            if (window.AuthGuard) AuthGuard.logActivity("assignment_save", "assignment.html");
             if (assignmentStatus) {
                 assignmentStatus.textContent = "✓ Assignments saved successfully on this device.";
                 assignmentStatus.style.color = "var(--success, #10b981)";
@@ -365,11 +407,13 @@ document.addEventListener("DOMContentLoaded", function () {
             const nameError = document.getElementById("nameError");
             const enrollmentError = document.getElementById("enrollmentError");
             const emailError = document.getElementById("emailError");
+            const mobileError = document.getElementById("mobileError");
             const passwordError = document.getElementById("passwordError");
 
             if (nameError) nameError.textContent = "";
             if (enrollmentError) enrollmentError.textContent = "";
             if (emailError) emailError.textContent = "";
+            if (mobileError) mobileError.textContent = "";
             if (passwordError) passwordError.textContent = "";
 
             form.querySelectorAll(".field-error").forEach(function (el) { el.remove(); });
@@ -439,6 +483,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 isValid = false;
             }
 
+            if (window.AuthGuard && typeof AuthGuard.checkStudentDuplicates === "function") {
+                const duplicates = AuthGuard.checkStudentDuplicates({ enrollment: enrollment, email: email, mobile: mobile });
+                if (duplicates.enrollment) {
+                    if (enrollmentError) enrollmentError.textContent = "This enrollment number is already registered.";
+                    isValid = false;
+                }
+                if (duplicates.email) {
+                    if (emailError) emailError.textContent = "This email address is already registered.";
+                    isValid = false;
+                }
+                if (duplicates.mobile) {
+                    if (mobileError) mobileError.textContent = "This phone number is already registered.";
+                    isValid = false;
+                }
+            }
+
             if (isValid) {
                 const courseVal = form.elements["course"] ? form.elements["course"].value : "";
                 const genderVal = gender ? gender.value : "Unspecified";
@@ -492,7 +552,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         form.addEventListener("reset", function () {
             form.querySelectorAll(".field-error").forEach(function (error) { error.remove(); });
-            ["nameError", "enrollmentError", "emailError", "passwordError"].forEach(function (id) {
+            ["nameError", "enrollmentError", "emailError", "mobileError", "passwordError"].forEach(function (id) {
                 const el = document.getElementById(id);
                 if (el) el.textContent = "";
             });

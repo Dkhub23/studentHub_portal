@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
             icon: "🎓",
             fieldLabel: "Student ID / Enrollment No.:",
             placeholder: "e.g. 23CE045 or student@charusat.edu.in",
-            redirectUrl: "student.html",
+            redirectUrl: "profile.html",
             buttonText: "Sign In as Student →",
             indicatorText: "🎓 Logging in to Student Portal (Courses, Attendance, Results)",
             defaultDemo: {
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
             icon: "👨‍🏫",
             fieldLabel: "Faculty ID / University Email:",
             placeholder: "e.g. amitthakkar.it@charusat.ac.in",
-            redirectUrl: "faculty.html",
+            redirectUrl: "profile.html",
             buttonText: "Sign In as Faculty →",
             indicatorText: "👨‍🏫 Logging in to Faculty Portal (Faculty Directory, Attendance, Grading)",
             defaultDemo: {
@@ -219,6 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
             };
             localStorage.setItem("studentHubActiveUser", JSON.stringify(sessionData));
             localStorage.setItem("userRole", role);
+            if (window.AuthGuard) AuthGuard.logActivity("login", config.redirectUrl);
 
             // Animated feedback
             showAlert(`Welcome, <strong>${displayName}</strong>! Authenticated as <strong>${config.title}</strong>. Redirecting to your dashboard...`, false);

@@ -8,6 +8,17 @@ let filteredEvents = [];
 let eventCurrentPage = 1;
 
 const eventRecordsPerPage = 6;
+const CUSTOM_EVENTS_KEY = "studentHubCustomEvents";
+const EVENT_REGISTRATIONS_KEY = "studentHubEventRegistrations";
+
+function getStoredList(key) {
+    try { return JSON.parse(localStorage.getItem(key) || "[]"); }
+    catch (error) { return []; }
+}
+
+function getActiveStudent() {
+    return window.AuthGuard && AuthGuard.getCurrentUser();
+}
 
 
 // ==========================================
@@ -30,7 +41,8 @@ async function loadEvents() {
             throw new Error("Unable to fetch events.json");
         }
 
-        eventsData = await response.json();
+        const baseEvents = await response.json();
+        eventsData = [...getStoredList(CUSTOM_EVENTS_KEY), ...baseEvents];
 
         filteredEvents = [...eventsData];
 
@@ -92,55 +104,102 @@ function renderEvents() {
 
         card.className = "card event-data-card";
 
-        card.innerHTML = `
-            <h3>🎯 ${event.name}</h3>
-
-            <p>
-                <strong>Type:</strong>
-                ${event.type}
-            </p>
-
-            <p>
-                <strong>Category:</strong>
-                ${event.category}
-            </p>
-
-            <p>
-                <strong>Venue:</strong>
-                ${event.venue}
-            </p>
-
-            <p>
-                <strong>Date:</strong>
-                ${event.startDate}
-                ${event.startDate !== event.endDate
-                    ? " to " + event.endDate
-                    : ""}
-            </p>
-
-            <p>
-                <strong>Level:</strong>
-                ${event.level}
-            </p>
-
-            <p>
-                <strong>Points:</strong>
-                ${event.points}
-            </p>
-
-            <button
-                type="button"
-                class="event-register-btn"
-                onclick="selectEvent(${event.id})">
-                Register
-            </button>
-        `;
-
+        const eventDetails = [
+            ["Type", event.type],
+            ["Category", event.category],
+            ["Venue", event.venue],
+            ["Date", `${event.startDate}${event.startDate !== event.endDate ? " to " + event.endDate : ""}`],
+            ["Level", event.level],
+            ["Points", event.points]
+        ];
+        const title = document.createElement("h3");
+        title.textContent = `Event: ${event.name}`;
+        card.appendChild(title);
+        eventDetails.forEach(([label, value]) => {
+            const paragraph = document.createElement("p");
+            const strong = document.createElement("strong");
+            strong.textContent = `${label}: `;
+            paragraph.append(strong, document.createTextNode(value == null ? "" : String(value)));
+            card.appendChild(paragraph);
+        });
+        const registerButton = document.createElement("button");
+        registerButton.type = "button";
+        registerButton.className = "event-register-btn";
+        registerButton.textContent = "Register";
+        registerButton.addEventListener("click", () => registerForEvent(event.id));
+        card.appendChild(registerButton);
         container.appendChild(card);
 
     });
 
     renderEventPagination();
+}
+
+function registerForEvent(id) {
+    const user = getActiveStudent();
+    if (!user || user.role !== "student") {
+        alert("Please sign in as a student to register for an event.");
+        return;
+    }
+    const event = eventsData.find(item => String(item.id) === String(id));
+    if (!event) return;
+    const registrations = getStoredList(EVENT_REGISTRATIONS_KEY);
+    const alreadyRegistered = registrations.some(item =>
+        String(item.eventId) === String(event.id) && item.studentUsername === user.username
+    );
+    if (alreadyRegistered) {
+        alert("You are already registered for this event.");
+        return;
+    }
+    registrations.push({
+        eventId: event.id,
+        eventName: event.name,
+        studentUsername: user.username,
+        studentName: user.displayName || user.username,
+        registeredAt: new Date().toISOString()
+    });
+    try {
+        localStorage.setItem(EVENT_REGISTRATIONS_KEY, JSON.stringify(registrations));
+    } catch (error) {
+        alert("Your registration could not be saved in this browser.");
+        console.error(error);
+        return;
+    }
+    alert("You are registered for " + event.name + ".");
+}
+
+function saveStudentEvent(form) {
+    const user = getActiveStudent();
+    if (!user || user.role !== "student") { alert("Please sign in as a student to add an event."); return; }
+    const name = form.elements.eventName.value.trim();
+    const type = form.querySelector("input[name='type']:checked");
+    const venue = document.getElementById("eventVenue").value.trim();
+    const startDate = document.getElementById("startDate").value;
+    const endDate = document.getElementById("endDate").value;
+    const levelText = form.elements.Level.value;
+    const match = levelText.match(/^(.*?)\s*\((\d+)\)$/);
+    if (!name || !type || !venue || !startDate || !endDate || endDate < startDate) {
+        alert("Enter the event name, type, venue, and valid start and end dates."); return;
+    }
+    const events = getStoredList(CUSTOM_EVENTS_KEY);
+    const event = {
+        id: "student-" + Date.now(), name, type: type.value, venue, startDate, endDate,
+        level: match ? match[1].replace(/ Level$/, "") : levelText,
+        points: match ? Number(match[2]) : 20,
+        category: "Student Event", createdBy: user.displayName || user.username
+    };
+    events.unshift(event);
+    try {
+        localStorage.setItem(CUSTOM_EVENTS_KEY, JSON.stringify(events));
+    } catch (error) {
+        alert("Your event could not be saved in this browser.");
+        console.error(error);
+        return;
+    }
+    eventsData.unshift(event);
+    filterEvents();
+    form.reset();
+    alert("Event added and is now visible to students and faculty.");
 }
 
 
@@ -402,6 +461,11 @@ document.addEventListener(
             );
         }
 
+        const eventForm = document.getElementById("eventRegistrationForm");
+        if (eventForm) eventForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            saveStudentEvent(eventForm);
+        });
 
         loadEvents();
 
