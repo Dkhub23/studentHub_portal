@@ -1,0 +1,55 @@
+
+## Test & Security Report
+
+Use this checklist during review and record the date, reviewer, browser, and
+PHP/MySQL versions alongside the results. Items are unchecked until verified.
+
+### Testing checklist
+
+- [ ] Run the browser demo and PHP/MySQL setup steps above from a clean state.
+- [ ] Complete the manual browser and dashboard checks listed above.
+- [ ] Check forms with valid, missing, malformed, duplicate, and unusually long
+  inputs; confirm errors are clear and invalid data is not saved.
+- [ ] Check links, navigation, page refreshes, and browser back/forward behavior.
+- [ ] Check responsive layouts at narrow mobile and desktop viewport widths.
+- [ ] Inspect PHP/server logs and browser console for errors during these checks.
+
+### Security checklist
+
+- [ ] Replace sample accounts and passwords; do not deploy the development
+  credentials included in the SQL files.
+- [ ] Use a dedicated MySQL account with only the privileges the application
+  needs; do not use the MySQL root account in production.
+- [ ] Configure database credentials through server environment variables and
+  keep secrets out of source control.
+- [ ] Serve the site over HTTPS in production and confirm session cookies use
+  `Secure`, `HttpOnly`, and an appropriate `SameSite` policy.
+- [ ] Verify authentication and role checks on every protected server route;
+  confirm non-admin users cannot access admin data by changing a URL.
+- [ ] Review input validation, prepared SQL statements, output escaping, and
+  CSRF protections for every state-changing server request.
+- [ ] Confirm error responses do not reveal credentials, SQL, file paths, or
+  stack traces; review logs for sensitive data.
+- [ ] Treat browser `localStorage` as demo storage only. It is accessible to
+  scripts running on the same origin and is not suitable for passwords,
+  secrets, or sensitive student records.
+- [ ] Back up the database and verify the restore process before production use.
+
+### Accessibility checklist
+
+- [ ] Navigate every page and operate links, forms, menus, and dialogs using a
+  keyboard only; ensure focus is visible and follows a sensible order.
+- [ ] Confirm each form control has a programmatic label and required fields
+  and validation errors are announced clearly.
+- [ ] Check heading levels, page titles, landmarks, and link text for a clear
+  structure and purpose.
+- [ ] Provide useful alternative text for informative images and empty alt text
+  for decorative images.
+- [ ] Check text contrast, zoom to 200%, and reflow at narrow viewport widths.
+- [ ] Verify status messages and color-coded information remain understandable
+  without relying on color alone.
+- [ ] Test key pages with a screen reader and address missing names, confusing
+  focus changes, or inaccessible dynamic updates.
+
+This checklist is a review aid, not a claim that the application has passed a
+security audit or formal accessibility evaluation.
